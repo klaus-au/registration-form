@@ -241,7 +241,7 @@
           <label><input type="checkbox" value="品勢(團體)" onchange="updateCategories()"> 品勢(團體)</label>
           <label><input type="checkbox" value="競速" onchange="updateCategories()"> 競速</label>
         </div>
-        <input type="hidden" id="category" name="entry.的基本1317768085">
+        <input type="hidden" id="category" name="entry.1317768085">
         <span id="categoryError" class="error">請至少選擇一項報名項目</span>
       </div>
 
@@ -266,7 +266,7 @@
   <div id="thankYouPage">
     <h2>感謝您的報名！</h2>
     <p>確認後教練將盡快與您聯繫</p>
-    <button class="return-button" onclick="window.history.back()">返回上一頁</button>
+    <button class="return-button" onclick="restartForm()">重新報名</button>
   </div>
 
   <script>
@@ -497,6 +497,12 @@
       categoryInput.value = '';
       document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
       updateDays(); // Ensure day dropdown is reset correctly
+    }
+
+    function restartForm() {
+      thankYouPage.style.display = 'none';
+      formContainer.style.display = 'block';
+      resetForm();
     }
   </script>
 </body>
