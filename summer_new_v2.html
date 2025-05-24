@@ -152,7 +152,7 @@
       z-index: 1000;
     }
     .modal.show {
-      display: flex;
+      display: flex !important;
     }
     .modal-content {
       background-color: white;
@@ -267,8 +267,10 @@
     .calendar-table-container {
       width: 100%;
       margin: 0 -36px;
+      padding: 0;
       display: flex;
       justify-content: center;
+      align-items: center;
     }
     .calendar-table {
       width: 100%;
@@ -286,6 +288,7 @@
       text-align: center;
       font-size: 15px;
       width: calc(100% / 7);
+      box-sizing: border-box;
     }
     .calendar-table th {
       background: linear-gradient(135deg, #2B6CB0 0%, #3182CE 100%);
@@ -346,13 +349,16 @@
       }
       .calendar-table-container {
         margin: 0 -24px;
+        padding: 0;
         display: flex;
         justify-content: center;
+        align-items: center;
       }
       .calendar-table th, .calendar-table td {
         padding: 4px;
         font-size: 12px;
         width: calc(100% / 7);
+        box-sizing: border-box;
       }
       .calendar-table td {
         height: 90px;
@@ -867,12 +873,14 @@
       if (!nameInput.value.trim()) {
         nameError.style.display = 'block';
         isValid = false;
+        console.log('Name validation failed');
       }
 
       // Validate phone
       if (!phoneInput.value.match(/\+?\d{8,}/)) {
         phoneError.style.display = 'block';
         isValid = false;
+        console.log('Phone validation failed');
       }
 
       // Validate birthdate
@@ -883,39 +891,44 @@
       const today = new Date();
       today.setHours(0, 0, 0, 0);
 
-      if (!year || !month || !day || isNaN(selectedDate) || selectedDate > today) {
+      if (!year || !month || !day || isNaN(selectedDate.getTime()) || selectedDate > today) {
         birthdateError.style.display = 'block';
         isValid = false;
+        console.log('Birthdate validation failed');
       }
 
       // Validate gender
       if (!form.querySelector('input[name="entry.123456792"]:checked')) {
         genderError.style.display = 'block';
         isValid = false;
+        console.log('Gender validation failed');
       }
 
       // Validate course option
       if (!courseOption.value) {
         courseError.style.display = 'block';
         isValid = false;
+        console.log('Course option validation failed');
       }
 
       // Validate class type
       if (!classType.value) {
         classTypeError.style.display = 'block';
         isValid = false;
+        console.log('Class type validation failed');
       }
 
       // Validate dates
-      const selectedDates = document.getElementById('selectedDates').value.split(', ').filter(d => d);
       const requiredClasses = courseOption.value ? parseInt(courseOption.match(/\d+/)[0]) : 0;
-      if (selectedDates.length !== requiredClasses) {
+      if (selectedDateTimeSlots.length !== requiredClasses) {
         datesError.style.display = 'block';
-        datesError.textContent = `請選擇正確的 ${requiredClasses} 個課程日期，當前已選 ${selectedDates.length} 個。`;
+        datesError.textContent = `請選擇正確的 ${requiredClasses} 個課程日期，當前已選 ${selectedDateTimeSlots.length} 個。`;
         isValid = false;
+        console.log('Dates validation failed: selected', selectedDateTimeSlots.length, 'required', requiredClasses);
       }
 
       if (isValid) {
+        console.log('Form validation passed, showing modal');
         // Populate confirmation modal
         document.getElementById('confirmName').textContent = nameInput.value;
         document.getElementById('confirmPhone').textContent = phoneInput.value;
@@ -924,8 +937,16 @@
         document.getElementById('confirmCourse').textContent = courseOption.value;
         document.getElementById('confirmClassType').textContent = classType.value;
         const confirmDatesList = document.getElementById('confirmDates');
-        confirmDatesList.innerHTML = selectedDates.map(date => `<li>${date}</li>`).join('');
+        confirmDatesList.innerHTML = selectedDateTimeSlots.map(slot => {
+          const [date, ...timeSlotParts] = slot.split(' ');
+          const timeSlot = timeSlotParts.join(' ');
+          const dateObj = new Date(date);
+          const weekday = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'][dateObj.getDay()];
+          return `<li>${date.replace(/-/g, '年').replace(/年(\d{2})/, '年$1月').replace(/月(\d{2})/, '月$1日')} ${weekday} ${timeSlot}</li>`;
+        }).join('');
         confirmModal.classList.add('show');
+      } else {
+        console.log('Form validation failed');
       }
     });
 
