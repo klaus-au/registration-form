@@ -11,39 +11,43 @@
   <style>
     body {
       font-family: 'Noto Sans TC', Arial, sans-serif;
-      max-width: 900px;
+      max-width: 960px;
       margin: 40px auto;
       padding: 20px;
-      background: linear-gradient(135deg, #E1F5FE 0%, #FFFFFF 100%);
-      color: #333;
+      background: linear-gradient(135deg, #F0F9FF 0%, #FFFFFF 100%);
+      color: #2D3748;
     }
     .form-container {
       background: white;
-      padding: 40px;
-      border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      padding: 48px;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+      transition: transform 0.3s ease;
+    }
+    .form-container:hover {
+      transform: translateY(-4px);
     }
     .form-group {
-      margin-bottom: 32px;
+      margin-bottom: 36px;
     }
     label {
       display: block;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
       font-weight: 500;
       font-size: 16px;
-      color: #333;
+      color: #2D3748;
     }
     input, select {
       width: 100%;
       padding: 14px;
-      border: 1px solid #B0BEC5;
+      border: 1px solid #CBD5E0;
       border-radius: 10px;
       box-sizing: border-box;
       font-size: 16px;
-      height: 44px;
+      height: 48px;
       line-height: 1.5;
       transition: border-color 0.3s, box-shadow 0.3s;
-      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     }
     #name, #phone {
       padding-left: 16px;
@@ -51,8 +55,8 @@
     }
     input:focus, select:focus {
       outline: none;
-      border-color: #0288D1;
-      box-shadow: 0 0 6px rgba(2, 136, 209, 0.3);
+      border-color: #3182CE;
+      box-shadow: 0 0 8px rgba(49, 130, 206, 0.3);
     }
     .date-group {
       display: flex;
@@ -61,11 +65,11 @@
     }
     .date-group select {
       width: 120px;
-      height: 44px;
+      height: 48px;
     }
     .date-group span {
       font-size: 16px;
-      color: #333;
+      color: #2D3748;
     }
     .gender-group {
       display: flex;
@@ -83,7 +87,7 @@
       appearance: none;
       width: 20px;
       height: 20px;
-      border: 2px solid #B0BEC5;
+      border: 2px solid #CBD5E0;
       border-radius: 50%;
       background: white;
       position: relative;
@@ -91,10 +95,10 @@
       transition: all 0.2s;
     }
     input[type="radio"]:hover {
-      border-color: #0288D1;
+      border-color: #3182CE;
     }
     input[type="radio"]:checked {
-      border-color: #0288D1;
+      border-color: #3182CE;
     }
     input[type="radio"]:checked::after {
       content: '';
@@ -105,33 +109,33 @@
       width: 12px;
       height: 12px;
       border-radius: 50%;
-      background: #0288D1;
+      background: #3182CE;
     }
     .course-card {
-      border: 1px solid #B0BEC5;
-      border-radius: 10px;
+      border: 1px solid #CBD5E0;
+      border-radius: 12px;
       padding: 16px;
       cursor: pointer;
-      transition: all 0.3s;
-      background-color: #ECEFF1;
+      transition: all 0.3s ease;
+      background-color: #F7FAFC;
     }
     .course-card:hover {
-      transform: scale(1.03);
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+      transform: translateY(-4px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
     }
     .course-card.selected {
-      border: 2px solid #0288D1;
-      box-shadow: 0 0 8px rgba(2, 136, 209, 0.3);
-      background-color: #E1F5FE;
+      border: 2px solid #3182CE;
+      box-shadow: 0 0 12px rgba(49, 130, 206, 0.3);
+      background-color: #EBF8FF;
     }
     .error {
-      color: #D32F2F;
+      color: #E53E3E;
       font-size: 14px;
       margin-top: 6px;
       display: none;
     }
     .warning {
-      color: #D32F2F;
+      color: #E53E3E;
       font-size: 14px;
       margin-top: 6px;
     }
@@ -147,13 +151,22 @@
       align-items: center;
       z-index: 1000;
     }
+    .modal.show {
+      display: flex;
+    }
     .modal-content {
       background-color: white;
       padding: 32px;
-      border-radius: 12px;
+      border-radius: 16px;
       width: 90%;
-      max-width: 600px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+      max-width: 640px;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+      transform: translateY(0);
+      animation: slideIn 0.3s ease-out;
+    }
+    @keyframes slideIn {
+      from { transform: translateY(-50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
     }
     .modal-content p {
       font-size: 16px;
@@ -173,7 +186,7 @@
       content: '•';
       position: absolute;
       left: -20px;
-      color: #0288D1;
+      color: #3182CE;
     }
     button {
       padding: 12px 24px;
@@ -182,128 +195,134 @@
       cursor: pointer;
       font-size: 16px;
       font-weight: 500;
-      transition: all 0.3s;
+      transition: all 0.3s ease;
       min-width: 100px;
       box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
     }
     button[type="submit"], button.confirm, button.return-button {
-      background-color: #0288D1;
+      background-color: #3182CE;
       color: white;
     }
     button[type="submit"]:hover, button.confirm:hover, button.return-button:hover {
-      background-color: #0277BD;
-      transform: scale(1.05);
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+      background-color: #2B6CB0;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
     }
     button.cancel {
-      background-color: #B0BEC5;
-      color: #333;
+      background-color: #CBD5E0;
+      color: #2D3748;
     }
     button.cancel:hover {
-      background-color: #90A4AE;
-      transform: scale(1.05);
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+      background-color: #A0AEC0;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
     }
     #thankYouPage {
       display: none;
       background: white;
-      padding: 40px;
-      border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      padding: 48px;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
       text-align: center;
     }
     #thankYouPage h2 {
-      font-size: 24px;
+      font-size: 28px;
       margin-bottom: 16px;
-      color: #333;
+      color: #2D3748;
     }
     #thankYouPage p {
       font-size: 16px;
       margin: 16px 0;
-      color: #155724;
+      color: #276749;
     }
     .selected-dates-list {
-      margin-top: 10px;
-      max-height: 150px;
+      margin-top: 12px;
+      max-height: 160px;
       overflow-y: auto;
+      border: 1px solid #E2E8F0;
+      border-radius: 8px;
+      padding: 8px;
     }
     .selected-dates-list li {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 8px;
-      border-bottom: 1px solid #ECEFF1;
+      padding: 8px 12px;
+      border-bottom: 1px solid #EDF2F7;
       font-size: 16px;
+      transition: background-color 0.2s;
+    }
+    .selected-dates-list li:hover {
+      background-color: #F7FAFC;
     }
     .selected-dates-list button {
-      background-color: #D32F2F;
+      background-color: #E53E3E;
       color: white;
       padding: 4px 8px;
       font-size: 14px;
-      border-radius: 4px;
+      border-radius: 6px;
     }
     .selected-dates-list button:hover {
-      background-color: #B71C1C;
+      background-color: #C53030;
     }
     .calendar-table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 10px;
+      margin-top: 12px;
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     }
     .calendar-table th, .calendar-table td {
-      border: 1px solid #B0BEC5;
-      padding: 8px;
+      border: 1px solid #E2E8F0;
+      padding: 10px;
       text-align: center;
       font-size: 14px;
     }
     .calendar-table th {
-      background-color: #E1F5FE;
+      background-color: #3182CE;
+      color: white;
       font-weight: 500;
+      text-transform: uppercase;
     }
     .calendar-table td {
       vertical-align: top;
-      height: 100px;
-      background-color: white;
+      height: 120px;
+      background-color: #F7FAFC;
+      transition: background-color 0.2s;
     }
     .calendar-table td.disabled {
-      background-color: #F5F5F5;
-      color: #B0BEC5;
+      background-color: #EDF2F7;
+      color: #A0AEC0;
     }
     .calendar-table .date-header {
-      font-weight: 500;
-      margin-bottom: 4px;
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      display: inline-block;
+      width: 28px;
+      height: 28px;
+      line-height: 28px;
+      border-radius: 50%;
+      background-color: #EBF8FF;
+      color: #2D3748;
     }
     .calendar-table .time-slot {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      font-size: 12px;
-      margin: 2px 0;
-    }
-    .calendar-table input[type="checkbox"] {
-      appearance: none;
-      width: 16px;
-      height: 16px;
-      border: 2px solid #B0BEC5;
-      border-radius: 4px;
+      display: block;
+      font-size: 13px;
+      margin: 4px 0;
+      padding: 4px 8px;
+      border-radius: 6px;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.2s ease;
     }
-    .calendar-table input[type="checkbox"]:hover {
-      border-color: #0288D1;
+    .calendar-table .time-slot:hover {
+      background-color: #EBF8FF;
     }
-    .calendar-table input[type="checkbox"]:checked {
-      border-color: #0288D1;
-      background-color: #0288D1;
-    }
-    .calendar-table input[type="checkbox"]:checked::after {
-      content: '✔';
+    .calendar-table .time-slot.selected {
+      background-color: #3182CE;
       color: white;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 10px;
     }
     @media (max-width: 600px) {
       body {
@@ -311,10 +330,10 @@
         padding: 16px;
       }
       .form-container, #thankYouPage {
-        padding: 24px;
+        padding: 32px;
       }
       .form-group {
-        margin-bottom: 24px;
+        margin-bottom: 28px;
       }
       h1 {
         font-size: 28px;
@@ -328,7 +347,7 @@
       input, select {
         padding: 10px;
         font-size: 14px;
-        height: 40px;
+        height: 44px;
         border-radius: 8px;
       }
       #name, #phone {
@@ -340,7 +359,7 @@
       }
       .date-group select {
         width: 100px;
-        height: 40px;
+        height: 44px;
       }
       .date-group span {
         font-size: 14px;
@@ -383,32 +402,32 @@
         border-radius: 8px;
       }
       .selected-dates-list {
-        max-height: 120px;
+        max-height: 140px;
       }
       .selected-dates-list li {
         font-size: 14px;
-        padding: 6px;
+        padding: 6px 10px;
       }
       .selected-dates-list button {
-        padding: 2px 6px;
+        padding: 3px 6px;
         font-size: 12px;
       }
       .calendar-table th, .calendar-table td {
-        padding: 6px;
+        padding: 8px;
         font-size: 12px;
       }
       .calendar-table td {
-        height: 80px;
+        height: 100px;
+      }
+      .calendar-table .date-header {
+        font-size: 16px;
+        width: 24px;
+        height: 24px;
+        line-height: 24px;
       }
       .calendar-table .time-slot {
-        font-size: 10px;
-      }
-      .calendar-table input[type="checkbox"] {
-        width: 14px;
-        height: 14px;
-      }
-      .calendar-table input[type="checkbox"]:checked::after {
-        font-size: 8px;
+        font-size: 11px;
+        padding: 3px 6px;
       }
     }
   </style>
@@ -483,7 +502,7 @@
               <h3 class="text-lg font-semibold">全期8堂</h3>
               <p class="text-gray-600">原價 $220/堂減$20，再早鳥9折：$1,440</p>
             </div>
-            <div class="course-card" data-value="全期10堂 $1,800" onclick="selectCourse(this)">
+            <div class="course-card" data-value="全期10堂 UrlEncodedCharacterReference:36;1,800" onclick="selectCourse(this)">
               <h3 class="text-lg font-semibold">全期10堂</h3>
               <p class="text-gray-600">原價 $220/堂減$20，再早鳥9折：$1,800</p>
             </div>
@@ -509,7 +528,7 @@
       <!-- 課程時間選擇 -->
       <div id="scheduleSection" class="form-group hidden">
         <h2 class="text-xl font-semibold mb-4 text-gray-800">課程時間與日期</h2>
-        <p class="text-sm text-gray-600 mb-4">請根據所選課程堂數，在下方表格中勾選對應的日期與時段。總數需符合課程堂數。</p>
+        <p class="text-sm text-gray-600 mb-4">請根據所選課程堂數，在下方表格中點選對應的日期與時段。總數需符合課程堂數。</p>
         <div class="form-group">
           <label>選擇日期與時段 *</label>
           <div id="calendarTable"></div>
@@ -638,6 +657,11 @@
     // Calendar table and time slot selection
     let selectedDateTimeSlots = [];
 
+    function formatTimeSlotDisplay(timeSlot) {
+      const match = timeSlot.match(/(\d{1,2}:\d{2}(?:am|pm))/i);
+      return match ? match[1] : timeSlot;
+    }
+
     function generateCalendarTable(year, month, availableDates, dateTimeSlotMap) {
       const table = document.createElement('table');
       table.className = 'calendar-table';
@@ -668,12 +692,11 @@
           let timeSlotHtml = '';
           timeSlots.forEach(slot => {
             const slotId = `${dateStr} ${slot}`;
-            const isChecked = selectedDateTimeSlots.includes(slotId);
+            const isSelected = selectedDateTimeSlots.includes(slotId);
             timeSlotHtml += `
-              <div class="time-slot">
-                <input type="checkbox" id="${slotId}" value="${slotId}" ${isChecked ? 'checked' : ''} onchange="toggleDateTimeSlot(this)">
-                <label for="${slotId}">${slot}</label>
-              </div>`;
+              <span class="time-slot ${isSelected ? 'selected' : ''}" data-slot="${slotId}" onclick="toggleDateTimeSlot(this)">
+                ${formatTimeSlotDisplay(slot)}
+              </span>`;
           });
           cell.innerHTML = `<div class="date-header">${day}</div>${timeSlotHtml}`;
         } else {
@@ -694,7 +717,7 @@
       const classType = document.getElementById('classType').value;
       const calendarTableContainer = document.getElementById('calendarTable');
       const courseOption = document.getElementById('courseOption').value;
-      const requiredClasses = courseOption ? parseInt(courseOption.value.match(/\d+/)[0]) : 0;
+      const requiredClasses = courseOption ? parseInt(courseOption.match(/\d+/)[0]) : 0;
 
       document.getElementById('requiredDates').textContent = requiredClasses;
       document.getElementById('scheduleSection').classList.add('hidden');
@@ -719,10 +742,10 @@
         const augustTable = generateCalendarTable(2025, 8, Array.from(availableDates), dateTimeSlotMap);
         const julyHeader = document.createElement('h3');
         julyHeader.textContent = '2025年7月';
-        julyHeader.className = 'text-lg font-semibold mt-4 mb-2';
+        julyHeader.className = 'text-lg font-semibold mt-6 mb-3';
         const augustHeader = document.createElement('h3');
         augustHeader.textContent = '2025年8月';
-        augustHeader.className = 'text-lg font-semibold mt-4 mb-2';
+        augustHeader.className = 'text-lg font-semibold mt-6 mb-3';
         calendarTableContainer.appendChild(julyHeader);
         calendarTableContainer.appendChild(julyTable);
         calendarTableContainer.appendChild(augustHeader);
@@ -731,14 +754,14 @@
       updateDateList();
     }
 
-    function toggleDateTimeSlot(checkbox) {
-      const value = checkbox.value;
-      if (checkbox.checked) {
-        if (!selectedDateTimeSlots.includes(value)) {
-          selectedDateTimeSlots.push(value);
-        }
+    function toggleDateTimeSlot(element) {
+      const slotId = element.dataset.slot;
+      if (selectedDateTimeSlots.includes(slotId)) {
+        selectedDateTimeSlots = selectedDateTimeSlots.filter(slot => slot !== slotId);
+        element.classList.remove('selected');
       } else {
-        selectedDateTimeSlots = selectedDateTimeSlots.filter(slot => slot !== value);
+        selectedDateTimeSlots.push(slotId);
+        element.classList.add('selected');
       }
       updateDateList();
     }
@@ -747,7 +770,7 @@
       const selectedDatesList = document.getElementById('selectedDatesList');
       const datesWarning = document.getElementById('datesWarning');
       const courseOption = document.getElementById('courseOption').value;
-      const requiredClasses = courseOption ? parseInt(courseOption.value.match(/\d+/)[0]) : 0;
+      const requiredClasses = courseOption ? parseInt(courseOption.match(/\d+/)[0]) : 0;
 
       selectedDatesList.innerHTML = '';
       document.getElementById('selectedDates').value = selectedDateTimeSlots.map(slot => {
@@ -783,7 +806,7 @@
         removeBtn.textContent = '移除';
         removeBtn.onclick = () => {
           selectedDateTimeSlots = selectedDateTimeSlots.filter((_, i) => i !== index);
-          document.getElementById(slot).checked = false;
+          document.querySelector(`.time-slot[data-slot="${slot}"]`).classList.remove('selected');
           updateDateList();
         };
         li.appendChild(removeBtn);
@@ -866,7 +889,7 @@
 
       // Validate dates
       const selectedDates = document.getElementById('selectedDates').value.split(', ').filter(d => d);
-      const requiredClasses = courseOption.value ? parseInt(courseOption.value.match(/\d+/)[0]) : 0;
+      const requiredClasses = courseOption.value ? parseInt(courseOption.match(/\d+/)[0]) : 0;
       if (selectedDates.length !== requiredClasses) {
         datesError.style.display = 'block';
         datesError.textContent = `請選擇正確的 ${requiredClasses} 個課程日期，當前已選 ${selectedDates.length} 個。`;
@@ -883,16 +906,16 @@
         document.getElementById('confirmClassType').textContent = classType.value;
         const confirmDatesList = document.getElementById('confirmDates');
         confirmDatesList.innerHTML = selectedDates.map(date => `<li>${date}</li>`).join('');
-        confirmModal.style.display = 'flex';
+        confirmModal.classList.add('show');
       }
     });
 
     function cancelSubmission() {
-      confirmModal.style.display = 'none';
+      confirmModal.classList.remove('show');
     }
 
     async function confirmSubmission() {
-      confirmModal.style.display = 'none';
+      confirmModal.classList.remove('show');
       
       const formData = new FormData(form);
       try {
@@ -923,9 +946,7 @@
       document.getElementById('datesWarning').textContent = '';
       document.getElementById('datesWarning').style.display = 'none';
       selectedDateTimeSlots = [];
-      document.querySelectorAll('.calendar-table input[type="checkbox"]').forEach(checkbox => {
-        checkbox.checked = false;
-      });
+      document.querySelectorAll('.time-slot').forEach(slot => slot.classList.remove('selected'));
       nameError.style.display = 'none';
       phoneError.style.display = 'none';
       birthdateError.style.display = 'none';
@@ -933,6 +954,7 @@
       courseError.style.display = 'none';
       classTypeError.style.display = 'none';
       datesError.style.display = 'none';
+      confirmModal.classList.remove('show');
       updateDays();
       updateCalendarTable();
     }
