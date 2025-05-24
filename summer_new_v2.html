@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>2025年暑期班報名表單v7 📣</title>
+  <title>2025年暑期班報名表格v9 📣</title>
   <!-- Google Fonts: Noto Sans TC -->
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
   <!-- Tailwind CSS CDN -->
@@ -242,7 +242,7 @@
       padding: 14px;
       text-align: center;
       font-size: 14px;
-      min-width: 48px; /* 確保單元格有足夠寬度 */
+      min-width: 48px;
     }
     .calendar-table th {
       background-color: #1E3A8A;
@@ -295,14 +295,12 @@
       margin-bottom: 12px;
       color: #1F2937;
     }
-    #classCountPrompt {
-      font-size: 14px;
-      font-weight: 500;
-      margin-top: 8px;
-      color: #3B82F6;
+    .intro-text p {
+      margin-bottom: 8px;
     }
-    #classCountPrompt.invalid {
-      color: #EF4444;
+    .intro-text .spacer {
+      height: 16px;
+      margin: 0;
     }
     @media (max-width: 600px) {
       body {
@@ -390,7 +388,7 @@
       .calendar-table th, .calendar-table td {
         padding: 8px;
         font-size: 14px;
-        min-width: 40px; /* 確保手機端單元格寬度 */
+        min-width: 40px;
       }
       .calendar-table th {
         font-size: 14px;
@@ -406,6 +404,12 @@
       .calendar-title {
         font-size: 16px;
       }
+      .intro-text p {
+        margin-bottom: 6px;
+      }
+      .intro-text .spacer {
+        height: 12px;
+      }
       #classCountPrompt {
         font-size: 12px;
       }
@@ -414,14 +418,17 @@
 </head>
 <body>
   <div class="form-container" id="formContainer">
-    <h1 class="text-4xl font-bold text-center mb-6 text-gray-800">2025年暑期班報名表單 📣</h1>
-    <p class="text-gray-600 mb-6 text-lg">
-      感謝您為孩子報名2025年暑期班！請填寫以下資訊，成功報名後您將收到WhatsApp確認訊息及付款詳情。所有欄位均為必填。
-    </p>
-    <p class="text-gray-600 mb-8 text-lg">
-      <strong>課程簡介</strong>：本課程為3至5歲及6歲以上學員設計，提供多元化的學習體驗（詳情請參考 <a href="#" class="text-blue-600 hover:underline">課程網站</a>）。<br>
-      <strong>早鳥優惠</strong>：報名費用享9折優惠，價格已於下方列出。
-    </p>
+    <h1 class="text-4xl font-bold text-center text-gray-800">2025年暑期班報名表格 📣</h1>
+    <div class="intro-text text-gray-600 text-lg">
+      <p>家長你好! 👋🏻</p>
+      <p>以下為2025年暑期班報名表格📝</p>
+      <p>請按照小朋友時間表，填寫以下資訊以完成報名程序</p>
+      <p class="spacer"></p>
+      <p>成功提交報名後，您將收到WhatsApp確認訊息，以及付款詳情💬</p>
+      <p class="spacer"></p>
+      <p><strong>早鳥優惠，立刻報名!🔥</strong></p>
+      <p>成功於6月22日或之前成功報名及完成付款，將可享有9折優惠!</p>
+    </div>
 
     <form id="registrationForm" action="https://docs.google.com/forms/d/e/1FAIpQLScxNYEXWMkoCU7UffKYNPRXBWtfxk0w7H5cTApecn8MJcxdyg/formResponse" method="POST" class="space-y-8">
       <!-- 學員資訊 -->
@@ -549,9 +556,10 @@
 
   <!-- 感謝頁面 -->
   <div id="thankYouPage" class="hidden">
-    <h2 class="text-2xl font-bold text-center mb-4">感謝您的報名！</h2>
+    <h2 class="text-2xl font-bold text-center mb-4">您已成功提交報名表格! 📝</h2>
     <p class="text-gray-600 mb-6">
-      我們將於24小時內通過WhatsApp聯繫您，確認班別資料及付款詳情。如需為其他學員報名，請點擊下方按鈕。
+      稍後您將會收到WhatsApp確認訊息，以及付款詳情<br>
+      完成付款後，小朋友的報名將自動確認✅
     </p>
     <button class="return-button" onclick="restartForm()">重新報名</button>
   </div>
@@ -662,6 +670,11 @@
       const prompt = document.getElementById('classCountPrompt');
       prompt.textContent = `已選：${selectedCount} / 需選：${requiredCount}`;
       prompt.classList.toggle('invalid', selectedCount !== requiredCount);
+    }
+
+    function formatDateString(dateStr) {
+      const [year, month, day] = dateStr.split('-');
+      return `${year}年${month}月${day}日`;
     }
 
     function updateCalendar() {
@@ -776,7 +789,7 @@
                       }
                       previousSelectedDates.sort((a, b) => a.date.localeCompare(b.date));
                       document.getElementById('selectedDates').value = previousSelectedDates
-                        .map(d => `${d.date.replace(/-/g, '年').replace(/年(\d{2})/, '年$1月').replace(/月(\d{2})/, '月$1日')} ${d.timeSlot}`)
+                        .map(d => `${formatDateString(d.date)} ${d.timeSlot}`)
                         .join(', ');
                       updateClassCountPrompt(previousSelectedDates.length, requiredClasses);
                     });
@@ -890,7 +903,7 @@
         document.getElementById('confirmClassType').textContent = classType.value;
         const confirmDatesList = document.getElementById('confirmDates');
         confirmDatesList.innerHTML = selectedDates
-          .map(date => `<li>${date.date.replace(/-/g, '年').replace(/年(\d{2})/, '年$1月').replace(/月(\d{2})/, '月$1日')} ${date.timeSlot}</li>`)
+          .map(date => `<li>${formatDateString(date.date)} ${date.timeSlot}</li>`)
           .join('');
         confirmModal.style.display = 'flex';
       }
