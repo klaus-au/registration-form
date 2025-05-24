@@ -265,8 +265,14 @@
     .selected-dates-list button:hover {
       background-color: #C53030;
     }
+    .calendar-table-container {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
     .calendar-table {
       width: 100%;
+      max-width: 100%;
       border-collapse: collapse;
       margin-top: 12px;
       background: white;
@@ -276,19 +282,21 @@
     }
     .calendar-table th, .calendar-table td {
       border: 1px solid #E2E8F0;
-      padding: 10px;
+      padding: 8px;
       text-align: center;
       font-size: 14px;
+      min-width: 80px;
     }
     .calendar-table th {
-      background-color: #3182CE;
+      background: linear-gradient(135deg, #2B6CB0 0%, #3182CE 100%);
       color: white;
       font-weight: 500;
       text-transform: uppercase;
+      padding: 10px;
     }
     .calendar-table td {
       vertical-align: top;
-      height: 120px;
+      height: 100px;
       background-color: #F7FAFC;
       transition: background-color 0.2s;
     }
@@ -297,37 +305,39 @@
       color: #A0AEC0;
     }
     .calendar-table .date-header {
-      font-size: 18px;
+      font-size: 16px;
       font-weight: 600;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
       display: inline-block;
-      width: 28px;
-      height: 28px;
-      line-height: 28px;
+      width: 24px;
+      height: 24px;
+      line-height: 24px;
       border-radius: 50%;
       background-color: #EBF8FF;
       color: #2D3748;
     }
     .calendar-table .time-slot {
       display: block;
-      font-size: 13px;
-      margin: 4px 0;
-      padding: 4px 8px;
-      border-radius: 6px;
+      font-size: 12px;
+      margin: 3px 0;
+      padding: 3px 6px;
+      border-radius: 4px;
       cursor: pointer;
       transition: all 0.2s ease;
     }
     .calendar-table .time-slot:hover {
       background-color: #EBF8FF;
+      transform: scale(1.05);
     }
     .calendar-table .time-slot.selected {
       background-color: #3182CE;
       color: white;
+      transform: scale(1.05);
     }
     @media (max-width: 600px) {
       body {
-        margin: 20px auto;
-        padding: 16px;
+        margin: 16px auto;
+        padding: 12px;
       }
       .form-container, #thankYouPage {
         padding: 32px;
@@ -412,22 +422,30 @@
         padding: 3px 6px;
         font-size: 12px;
       }
+      .calendar-table-container {
+        margin-left: -16px;
+        margin-right: -16px;
+        padding-left: 16px;
+        padding-right: 16px;
+      }
       .calendar-table th, .calendar-table td {
-        padding: 8px;
+        padding: 6px;
         font-size: 12px;
+        min-width: 50px;
       }
       .calendar-table td {
-        height: 100px;
+        height: 80px;
       }
       .calendar-table .date-header {
-        font-size: 16px;
-        width: 24px;
-        height: 24px;
-        line-height: 24px;
+        font-size: 14px;
+        width: 20px;
+        height: 20px;
+        line-height: 20px;
       }
       .calendar-table .time-slot {
-        font-size: 11px;
-        padding: 3px 6px;
+        font-size: 10px;
+        padding: 2px 4px;
+        margin: 2px 0;
       }
     }
   </style>
@@ -502,7 +520,7 @@
               <h3 class="text-lg font-semibold">全期8堂</h3>
               <p class="text-gray-600">原價 $220/堂減$20，再早鳥9折：$1,440</p>
             </div>
-            <div class="course-card" data-value="全期10堂 UrlEncodedCharacterReference:36;1,800" onclick="selectCourse(this)">
+            <div class="course-card" data-value="全期10堂 $1,800" onclick="selectCourse(this)">
               <h3 class="text-lg font-semibold">全期10堂</h3>
               <p class="text-gray-600">原價 $220/堂減$20，再早鳥9折：$1,800</p>
             </div>
@@ -531,7 +549,9 @@
         <p class="text-sm text-gray-600 mb-4">請根據所選課程堂數，在下方表格中點選對應的日期與時段。總數需符合課程堂數。</p>
         <div class="form-group">
           <label>選擇日期與時段 *</label>
-          <div id="calendarTable"></div>
+          <div class="calendar-table-container">
+            <div id="calendarTable"></div>
+          </div>
           <p class="text-sm text-gray-600 mt-2">已選：<span id="selectedDatesCount">0</span> / <span id="requiredDates">0</span></p>
           <span id="datesWarning" class="warning"></span>
           <ul id="selectedDatesList" class="selected-dates-list"></ul>
