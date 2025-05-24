@@ -28,7 +28,7 @@
       transform: translateY(-4px);
     }
     .form-group {
-      margin-bottom: 16px;
+      margin-bottom: 36px;
     }
     label {
       display: block;
@@ -376,7 +376,7 @@
         margin: 6px 0;
       }
       .form-group {
-        margin-bottom: 16px;
+        margin-bottom: 28px;
       }
       h1 {
         font-size: 28px;
@@ -553,14 +553,12 @@
         <h2 class="text-xl font-semibold mb-4 text-gray-800">課程時間與日期</h2>
         <p class="text-sm text-gray-600 mb-4">請根據所選課程堂數，在下方表格中點選對應的日期與時段。總數需符合課程堂數。</p>
         <div class="form-group">
-          <label>選擇日期與時段 *</label>
           <div class="calendar-table-container">
             <div id="calendarTable"></div>
           </div>
           <p class="text-sm text-gray-600 mt-2">已選：<span id="selectedDatesCount">0</span> / <span id="requiredDates">0</span></p>
           <span id="datesWarning" class="warning"></span>
           <ul id="selectedDatesList" class="selected-dates-list"></ul>
-          <span id="datesError" class="error">請選擇正確數量的課程日期</span>
         </div>
         <input type="hidden" name="entry.123456795" id="selectedDates">
       </div>
@@ -851,7 +849,7 @@
     const genderError = document.getElementById('genderError');
     const courseError = document.getElementById('courseError');
     const classTypeError = document.getElementById('classTypeError');
-    const datesError = document.getElementById('datesError');
+    const datesWarning = document.getElementById('datesWarning');
     const confirmModal = document.getElementById('confirmModal');
     const formContainer = document.getElementById('formContainer');
     const thankYouPage = document.getElementById('thankYouPage');
@@ -867,7 +865,7 @@
       genderError.style.display = 'none';
       courseError.style.display = 'none';
       classTypeError.style.display = 'none';
-      datesError.style.display = 'none';
+      datesWarning.style.display = 'none';
 
       // Validate name
       if (!nameInput.value.trim()) {
@@ -921,8 +919,8 @@
       // Validate dates
       const requiredClasses = courseOption.value ? parseInt(courseOption.match(/\d+/)[0]) : 0;
       if (selectedDateTimeSlots.length !== requiredClasses) {
-        datesError.style.display = 'block';
-        datesError.textContent = `請選擇正確的 ${requiredClasses} 個課程日期，當前已選 ${selectedDateTimeSlots.length} 個。`;
+        datesWarning.textContent = `請選擇正確的 ${requiredClasses} 個課程日期，當前已選 ${selectedDateTimeSlots.length} 個。`;
+        datesWarning.style.display = 'block';
         isValid = false;
         console.log('Dates validation failed: selected', selectedDateTimeSlots.length, 'required', requiredClasses);
       }
@@ -993,7 +991,6 @@
       genderError.style.display = 'none';
       courseError.style.display = 'none';
       classTypeError.style.display = 'none';
-      datesError.style.display = 'none';
       confirmModal.classList.remove('show');
       updateDays();
       updateCalendarTable();
