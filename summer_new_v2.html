@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>2025年暑期班報名表單v4 📣</title>
+  <title>2025年暑期班報名表單v5 📣</title>
   <!-- Google Fonts: Noto Sans TC -->
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
   <!-- Tailwind CSS CDN -->
@@ -14,7 +14,7 @@
       max-width: 960px;
       margin: 40px auto;
       padding: 20px;
-      background: linear-gradient(135deg, #E3F2FD 0%, #F9FAFB 100%);
+      background: linear-gradient(135deg, #E0F2FE 0%, #F3F4F6 100%);
       color: #1F2937;
     }
     .form-container {
@@ -112,7 +112,7 @@
       border-radius: 10px;
       padding: 16px;
       cursor: pointer;
-      transition: all 0.3s;
+      transition: all 0.3s ease;
       background-color: #F3F4F6;
     }
     .course-card:hover {
@@ -177,7 +177,7 @@
       cursor: pointer;
       font-size: 16px;
       font-weight: 500;
-      transition: all 0.3s;
+      transition: all 0.3s ease;
       min-width: 100px;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
@@ -217,34 +217,41 @@
       margin: 16px 0;
       color: #166534;
     }
+    .calendar-container {
+      max-width: 100%;
+      overflow-x: auto;
+      padding: 0 8px;
+    }
     .calendar-table {
       width: 100%;
-      border-collapse: collapse;
+      max-width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
       margin-top: 16px;
       background: white;
       border-radius: 8px;
-      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
     .calendar-table.july {
-      background: #E0F2FE;
+      background: #DBEAFE;
     }
     .calendar-table.august {
-      background: #ECFEFF;
+      background: #D1FAE5;
     }
     .calendar-table th, .calendar-table td {
-      border: 1px solid #D1D5DB;
-      padding: 12px;
+      padding: 14px;
       text-align: center;
       font-size: 14px;
     }
     .calendar-table th {
-      background-color: #3B82F6;
+      background-color: #1E3A8A;
       color: white;
       font-weight: 500;
     }
     .calendar-table td {
       background-color: #F9FAFB;
       vertical-align: top;
+      transition: background-color 0.3s ease;
     }
     .calendar-table td.disabled {
       background-color: #E5E7EB;
@@ -252,9 +259,10 @@
       cursor: not-allowed;
     }
     .calendar-table .date {
-      font-size: 18px;
-      font-weight: 600;
+      font-size: 20px;
+      font-weight: 700;
       margin-bottom: 8px;
+      color: #1F2937;
     }
     .calendar-table .time-slot {
       display: flex;
@@ -265,17 +273,20 @@
     .calendar-table .time-slot span {
       display: inline-block;
       padding: 4px 8px;
-      border-radius: 4px;
+      border-radius: 6px;
       font-size: 12px;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.3s ease;
+      background-color: #E5E7EB;
     }
     .calendar-table .time-slot span:hover {
-      background-color: #BFDBFE;
+      background-color: #93C5FD;
+      transform: scale(1.05);
     }
     .calendar-table .time-slot span.selected {
       background-color: #3B82F6;
       color: white;
+      transform: scale(1.05);
     }
     .calendar-title {
       font-size: 18px;
@@ -283,10 +294,19 @@
       margin-bottom: 12px;
       color: #1F2937;
     }
+    #classCountPrompt {
+      font-size: 14px;
+      font-weight: 500;
+      margin-top: 8px;
+      color: #3B82F6;
+    }
+    #classCountPrompt.invalid {
+      color: #EF4444;
+    }
     @media (max-width: 600px) {
       body {
-        margin: 20px auto;
-        padding: 16px;
+        margin: 16px auto;
+        padding: 12px;
       }
       .form-container, #thankYouPage {
         padding: 24px;
@@ -360,22 +380,41 @@
         min-width: 80px;
         border-radius: 8px;
       }
+      .calendar-container {
+        padding: 0 4px;
+      }
       .calendar-table {
         margin-top: 12px;
       }
       .calendar-table th, .calendar-table td {
-        padding: 8px;
+        padding: 6px;
         font-size: 12px;
+      }
+      .calendar-table th {
+        font-size: 12px;
+      }
+      .calendar-table th:nth-child(1)::before { content: '一'; }
+      .calendar-table th:nth-child(2)::before { content: '二'; }
+      .calendar-table th:nth-child(3)::before { content: '三'; }
+      .calendar-table th:nth-child(4)::before { content: '四'; }
+      .calendar-table th:nth-child(5)::before { content: '五'; }
+      .calendar-table th:nth-child(6)::before { content: '六'; }
+      .calendar-table th:nth-child(7)::before { content: '日'; }
+      .calendar-table th {
+        text-indent: -9999px;
       }
       .calendar-table .date {
         font-size: 14px;
       }
       .calendar-table .time-slot span {
-        font-size: 10px;
+        font-size: 9px;
         padding: 3px 6px;
       }
       .calendar-title {
         font-size: 16px;
+      }
+      #classCountPrompt {
+        font-size: 12px;
       }
     }
   </style>
@@ -479,7 +518,10 @@
         <p class="text-sm text-gray-600 mb-4">請根據所選課程堂數，在下方表格中點選對應數量的日期及時段，總數需符合課程堂數。</p>
         <div class="form-group">
           <label>選擇日期與時段（在表格中點選） *</label>
-          <div id="calendar"></div>
+          <div class="calendar-container">
+            <div id="calendar"></div>
+          </div>
+          <p id="classCountPrompt"></p>
           <span id="datesError" class="error">請選擇正確數量的課程日期</span>
         </div>
         <input type="hidden" name="entry.123456795" id="selectedDates">
@@ -623,6 +665,12 @@
       return { july: julyDates, august: augustDates };
     }
 
+    function updateClassCountPrompt(selectedCount, requiredCount) {
+      const prompt = document.getElementById('classCountPrompt');
+      prompt.textContent = `已選：${selectedCount} / 需選：${requiredCount}`;
+      prompt.classList.toggle('invalid', selectedCount !== requiredCount);
+    }
+
     function updateCalendar() {
       const classType = document.getElementById('classType').value;
       const calendarContainer = document.getElementById('calendar');
@@ -643,6 +691,7 @@
       } else {
         console.log('Hiding schedule section');
         scheduleSection.classList.add('hidden');
+        updateClassCountPrompt(0, requiredClasses);
         return;
       }
 
@@ -656,8 +705,12 @@
       if (availableDates.length === 0) {
         console.warn('No available dates for selected class type');
         calendarContainer.innerHTML = '<p class="text-gray-600">無可用課程日期</p>';
+        updateClassCountPrompt(0, requiredClasses);
         return;
       }
+
+      // 更新課堂數量提示
+      updateClassCountPrompt(previousSelectedDates.length, requiredClasses);
 
       // 生成 7 月和 8 月日曆
       const { july, august } = generateCalendarDates();
@@ -731,6 +784,7 @@
                       document.getElementById('selectedDates').value = previousSelectedDates
                         .map(d => `${d.date.replace(/-/g, '年').replace(/年(\d{2})/, '年$1月').replace(/月(\d{2})/, '月$1日')} ${d.timeSlot}`)
                         .join(', ');
+                      updateClassCountPrompt(previousSelectedDates.length, requiredClasses);
                     });
                     slotDiv.appendChild(span);
                   });
@@ -881,6 +935,7 @@
       document.getElementById('selectedDates').value = '';
       previousSelectedDates = [];
       document.getElementById('calendar').innerHTML = '';
+      document.getElementById('classCountPrompt').textContent = '';
       nameError.style.display = 'none';
       phoneError.style.display = 'none';
       birthdateError.style.display = 'none';
