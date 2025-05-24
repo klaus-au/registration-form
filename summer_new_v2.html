@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>2025年暑期班報名表單v5 📣</title>
+  <title>2025年暑期班報名表單v7 📣</title>
   <!-- Google Fonts: Noto Sans TC -->
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
   <!-- Tailwind CSS CDN -->
@@ -242,6 +242,7 @@
       padding: 14px;
       text-align: center;
       font-size: 14px;
+      min-width: 48px; /* 確保單元格有足夠寬度 */
     }
     .calendar-table th {
       background-color: #1E3A8A;
@@ -387,21 +388,13 @@
         margin-top: 12px;
       }
       .calendar-table th, .calendar-table td {
-        padding: 6px;
-        font-size: 12px;
+        padding: 8px;
+        font-size: 14px;
+        min-width: 40px; /* 確保手機端單元格寬度 */
       }
       .calendar-table th {
-        font-size: 12px;
-      }
-      .calendar-table th:nth-child(1)::before { content: '一'; }
-      .calendar-table th:nth-child(2)::before { content: '二'; }
-      .calendar-table th:nth-child(3)::before { content: '三'; }
-      .calendar-table th:nth-child(4)::before { content: '四'; }
-      .calendar-table th:nth-child(5)::before { content: '五'; }
-      .calendar-table th:nth-child(6)::before { content: '六'; }
-      .calendar-table th:nth-child(7)::before { content: '日'; }
-      .calendar-table th {
-        text-indent: -9999px;
+        font-size: 14px;
+        font-weight: 600;
       }
       .calendar-table .date {
         font-size: 14px;
@@ -430,32 +423,32 @@
       <strong>早鳥優惠</strong>：報名費用享9折優惠，價格已於下方列出。
     </p>
 
-    <form id="registrationForm" action="https://docs.google.com/forms/d/e/[FORM_ID]/formResponse" method="POST" class="space-y-8">
+    <form id="registrationForm" action="https://docs.google.com/forms/d/e/1FAIpQLScxNYEXWMkoCU7UffKYNPRXBWtfxk0w7H5cTApecn8MJcxdyg/formResponse" method="POST" class="space-y-8">
       <!-- 學員資訊 -->
       <div class="form-group">
         <h2 class="text-xl font-semibold mb-4 text-gray-800">學員資訊</h2>
         <div class="form-group">
           <label for="name">學員中文姓名 *</label>
-          <input type="text" id="name" name="entry.1702329531" required>
+          <input type="text" id="name" name="entry.520929458" required>
           <span id="nameError" class="error">請輸入學員姓名</span>
         </div>
         <div class="form-group">
           <label for="phone">聯絡電話（需接收WhatsApp訊息） *</label>
-          <input type="tel" id="phone" name="entry.1541580542" pattern="\+?\d{8,}" required>
+          <input type="tel" id="phone" name="entry.1848250356" pattern="\+?\d{8,}" required>
           <span id="phoneError" class="error">請輸入有效的電話號碼</span>
         </div>
         <div class="form-group">
           <label for="birthYear">出生日期 *</label>
           <div class="date-group">
-            <select id="birthYear" name="entry.1919065731_year" required>
+            <select id="birthYear" name="entry.68040101_year" required>
               <option value="">年</option>
             </select>
             <span>/</span>
-            <select id="birthMonth" name="entry.1919065731_month" required>
+            <select id="birthMonth" name="entry.68040101_month" required>
               <option value="">月</option>
             </select>
             <span>/</span>
-            <select id="birthDay" name="entry.1919065731_day" required>
+            <select id="birthDay" name="entry.68040101_day" required>
               <option value="">日</option>
             </select>
           </div>
@@ -464,8 +457,8 @@
         <div class="form-group">
           <label>性別 *</label>
           <div class="gender-group">
-            <label><input type="radio" name="entry.123456792" value="男" required> 男</label>
-            <label><input type="radio" name="entry.123456792" value="女"> 女</label>
+            <label><input type="radio" name="entry.1745029240" value="男" required> 男</label>
+            <label><input type="radio" name="entry.1745029240" value="女"> 女</label>
           </div>
           <span id="genderError" class="error">請選擇性別</span>
         </div>
@@ -498,12 +491,12 @@
               <p class="text-gray-600">原價 $220/堂減$20，再早鳥9折：$2,160</p>
             </div>
           </div>
-          <input type="hidden" id="courseOption" name="entry.123456793">
+          <input type="hidden" id="courseOption" name="entry.714236598">
           <span id="courseError" class="error">請選擇課程方案</span>
         </div>
         <div class="form-group">
           <label for="classType">所選班別 *</label>
-          <select id="classType" name="entry.123456794" required class="w-full" onchange="updateCalendar()">
+          <select id="classType" name="entry.750153756" required class="w-full" onchange="updateCalendar()">
             <option value="" disabled selected>請選擇</option>
             <option value="3歲至5歲">3歲至5歲</option>
             <option value="6歲或以上">6歲或以上</option>
@@ -524,7 +517,7 @@
           <p id="classCountPrompt"></p>
           <span id="datesError" class="error">請選擇正確數量的課程日期</span>
         </div>
-        <input type="hidden" name="entry.123456795" id="selectedDates">
+        <input type="hidden" name="entry.363732204" id="selectedDates">
       </div>
 
       <!-- 按鈕 -->
@@ -736,9 +729,10 @@
         table.className = `calendar-table ${tableClass}`;
         const thead = document.createElement('thead');
         const headerRow = document.createElement('tr');
-        ['星期一', '星期二', '星期三', '星期四', '星期五', '星期六', '星期日'].forEach(day => {
+        ['一', '二', '三', '四', '五', '六', '日'].forEach(day => {
           const th = document.createElement('th');
           th.textContent = day;
+          th.setAttribute('data-full-text', ['星期一', '星期二', '星期三', '星期四', '星期五', '星期六', '星期日'][['一', '二', '三', '四', '五', '六', '日'].indexOf(day)]);
           headerRow.appendChild(th);
         });
         thead.appendChild(headerRow);
@@ -864,7 +858,7 @@
         isValid = false;
       }
 
-      if (!form.querySelector('input[name="entry.123456792"]:checked')) {
+      if (!form.querySelector('input[name="entry.1745029240"]:checked')) {
         genderError.style.display = 'block';
         isValid = false;
       }
@@ -891,7 +885,7 @@
         document.getElementById('confirmName').textContent = nameInput.value;
         document.getElementById('confirmPhone').textContent = phoneInput.value;
         document.getElementById('confirmBirthdate').textContent = `${year}/${month.toString().padStart(2, '0')}/${day.toString().padStart(2, '0')}`;
-        document.getElementById('confirmGender').textContent = form.querySelector('input[name="entry.123456792"]:checked').value;
+        document.getElementById('confirmGender').textContent = form.querySelector('input[name="entry.1745029240"]:checked').value;
         document.getElementById('confirmCourse').textContent = courseOption.value;
         document.getElementById('confirmClassType').textContent = classType.value;
         const confirmDatesList = document.getElementById('confirmDates');
@@ -911,7 +905,7 @@
       
       const formData = new FormData(form);
       try {
-        await fetch(form.action, {
+        const response = await fetch(form.action, {
           method: 'POST',
           body: formData,
           mode: 'no-cors'
