@@ -845,13 +845,7 @@
       let isValid = true;
 
       // Reset error messages
-      nameError.style.display = 'none';
-      phoneError.style.display = 'none';
-      birthdateError.style.display = 'none';
-      genderError.style.display = 'none';
-      courseError.style.display = 'none';
-      classTypeError.style.display = 'none';
-      datesError.style.display = 'none';
+      [nameError, phoneError, birthdateError, genderError, courseError, classTypeError, datesError].forStyle.display = 'none';
 
       // Validate name
       if (!nameInput.value.trim()) {
@@ -920,7 +914,7 @@
           const weekday = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'][dateObj.getDay()];
           return `<li>${date.replace(/-/g, '年').replace(/年(\d{2})/, '年$1月').replace(/月(\d{2})/, '月$1日')} ${weekday} ${timeSlot}</li>`;
         }).join('');
-        confirmModal.classList.add('show');
+        setTimeout(() => confirmModal.classList.add('show'), 0); // Ensure DOM update
       }
     });
 
@@ -960,13 +954,7 @@
       document.getElementById('datesWarning').style.display = 'none';
       selectedDateTimeSlots = [];
       document.querySelectorAll('.time-slot').forEach(slot => slot.classList.remove('selected'));
-      nameError.style.display = 'none';
-      phoneError.style.display = 'none';
-      birthdateError.style.display = 'none';
-      genderError.style.display = 'none';
-      courseError.style.display = 'none';
-      classTypeError.style.display = 'none';
-      datesError.style.display = 'none';
+      [nameError, phoneError, birthdateError, genderError, courseError, classTypeError, datesError].forEach(el => el.style.display = 'none');
       confirmModal.classList.remove('show');
       updateDays();
       updateCalendarTable();
