@@ -3,28 +3,25 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>2025年暑期班報名表單v2 📣</title>
+  <title>2025年暑期班報名表單v4 📣</title>
   <!-- Google Fonts: Noto Sans TC -->
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Flatpickr CDN for Calendar -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   <style>
     body {
       font-family: 'Noto Sans TC', Arial, sans-serif;
-      max-width: 900px;
+      max-width: 960px;
       margin: 40px auto;
       padding: 20px;
-      background: linear-gradient(135deg, #E1F5FE 0%, #FFFFFF 100%);
-      color: #333;
+      background: linear-gradient(135deg, #E3F2FD 0%, #F9FAFB 100%);
+      color: #1F2937;
     }
     .form-container {
       background: white;
-      padding: 40px;
-      border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      padding: 48px;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
     }
     .form-group {
       margin-bottom: 32px;
@@ -34,19 +31,19 @@
       margin-bottom: 10px;
       font-weight: 500;
       font-size: 16px;
-      color: #333;
+      color: #1F2937;
     }
     input, select {
       width: 100%;
       padding: 14px;
-      border: 1px solid #B0BEC5;
+      border: 1px solid #D1D5DB;
       border-radius: 10px;
       box-sizing: border-box;
       font-size: 16px;
       height: 44px;
       line-height: 1.5;
       transition: border-color 0.3s, box-shadow 0.3s;
-      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     }
     #name, #phone {
       padding-left: 16px;
@@ -54,8 +51,8 @@
     }
     input:focus, select:focus {
       outline: none;
-      border-color: #0288D1;
-      box-shadow: 0 0 6px rgba(2, 136, 209, 0.3);
+      border-color: #3B82F6;
+      box-shadow: 0 0 6px rgba(59, 130, 246, 0.3);
     }
     .date-group {
       display: flex;
@@ -68,7 +65,7 @@
     }
     .date-group span {
       font-size: 16px;
-      color: #333;
+      color: #1F2937;
     }
     .gender-group {
       display: flex;
@@ -84,11 +81,9 @@
     }
     input[type="radio"] {
       appearance: none;
-      -webkit-appearance: none;
-      -moz-appearance: none;
       width: 20px;
       height: 20px;
-      border: 2px solid #B0BEC5;
+      border: 2px solid #D1D5DB;
       border-radius: 50%;
       background: white;
       position: relative;
@@ -96,10 +91,10 @@
       transition: all 0.2s;
     }
     input[type="radio"]:hover {
-      border-color: #0288D1;
+      border-color: #3B82F6;
     }
     input[type="radio"]:checked {
-      border-color: #0288D1;
+      border-color: #3B82F6;
     }
     input[type="radio"]:checked::after {
       content: '';
@@ -110,35 +105,30 @@
       width: 12px;
       height: 12px;
       border-radius: 50%;
-      background: #0288D1;
+      background: #3B82F6;
     }
     .course-card {
-      border: 1px solid #B0BEC5;
+      border: 1px solid #D1D5DB;
       border-radius: 10px;
       padding: 16px;
       cursor: pointer;
       transition: all 0.3s;
-      background-color: #ECEFF1;
+      background-color: #F3F4F6;
     }
     .course-card:hover {
       transform: scale(1.03);
       box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
     }
     .course-card.selected {
-      border: 2px solid #0288D1;
-      box-shadow: 0 0 8px rgba(2, 136, 209, 0.3);
-      background-color: #E1F5FE;
+      border: 2px solid #3B82F6;
+      box-shadow: 0 0 8px rgba(59, 130, 246, 0.3);
+      background-color: #E0F2FE;
     }
     .error {
-      color: #D32F2F;
+      color: #EF4444;
       font-size: 14px;
       margin-top: 6px;
       display: none;
-    }
-    .warning {
-      color: #D32F2F;
-      font-size: 14px;
-      margin-top: 6px;
     }
     .modal {
       display: none;
@@ -178,7 +168,7 @@
       content: '•';
       position: absolute;
       left: -20px;
-      color: #0288D1;
+      color: #3B82F6;
     }
     button {
       padding: 12px 24px;
@@ -189,114 +179,109 @@
       font-weight: 500;
       transition: all 0.3s;
       min-width: 100px;
-      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
     button[type="submit"], button.confirm, button.return-button {
-      background-color: #0288D1;
+      background-color: #3B82F6;
       color: white;
     }
     button[type="submit"]:hover, button.confirm:hover, button.return-button:hover {
-      background-color: #0277BD;
+      background-color: #2563EB;
       transform: scale(1.05);
       box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
     }
     button.cancel {
-      background-color: #B0BEC5;
-      color: #333;
+      background-color: #D1D5DB;
+      color: #1F2937;
     }
     button.cancel:hover {
-      background-color: #90A4AE;
+      background-color: #B9C2CC;
       transform: scale(1.05);
       box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
     }
     #thankYouPage {
       display: none;
       background: white;
-      padding: 40px;
-      border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      padding: 48px;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
       text-align: center;
     }
     #thankYouPage h2 {
       font-size: 24px;
       margin-bottom: 16px;
-      color: #333;
+      color: #1F2937;
     }
     #thankYouPage p {
       font-size: 16px;
       margin: 16px 0;
-      color: #155724;
+      color: #166534;
     }
-    .flatpickr-calendar {
-      font-family: 'Noto Sans TC', Arial, sans-serif;
-      margin-top: 10px;
-      box-sizing: border-box;
-      display: block;
-      margin: 0 auto;
-    }
-    .flatpickr-month, .flatpickr-days {
+    .calendar-table {
       width: 100%;
-      max-width: 100%;
+      border-collapse: collapse;
+      margin-top: 16px;
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
     }
-    .flatpickr-day {
-      margin: 2px;
-      padding: 4px;
-      transition: background-color 0.2s;
-      font-size: 16px;
+    .calendar-table.july {
+      background: #E0F2FE;
     }
-    .flatpickr-day:hover {
-      background-color: #E3F2FD;
+    .calendar-table.august {
+      background: #ECFEFF;
     }
-    .flatpickr-day.selected {
-      background-color: #0288D1 !important;
-      border-color: #0288D1 !important;
-      color: white !important;
-    }
-    .selected-dates-list {
-      margin-top: 10px;
-      max-height: 150px;
-      overflow-y: auto;
-    }
-    .selected-dates-list li {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 8px;
-      border-bottom: 1px solid #ECEFF1;
-      font-size: 16px;
-    }
-    .selected-dates-list button {
-      background-color: #D32F2F;
-      color: white;
-      padding: 4px 8px;
+    .calendar-table th, .calendar-table td {
+      border: 1px solid #D1D5DB;
+      padding: 12px;
+      text-align: center;
       font-size: 14px;
+    }
+    .calendar-table th {
+      background-color: #3B82F6;
+      color: white;
+      font-weight: 500;
+    }
+    .calendar-table td {
+      background-color: #F9FAFB;
+      vertical-align: top;
+    }
+    .calendar-table td.disabled {
+      background-color: #E5E7EB;
+      color: #9CA3AF;
+      cursor: not-allowed;
+    }
+    .calendar-table .date {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .calendar-table .time-slot {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 8px;
+    }
+    .calendar-table .time-slot span {
+      display: inline-block;
+      padding: 4px 8px;
       border-radius: 4px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
     }
-    .selected-dates-list button:hover {
-      background-color: #B71C1C;
+    .calendar-table .time-slot span:hover {
+      background-color: #BFDBFE;
     }
-    .time-slot-modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.7);
-      justify-content: center;
-      align-items: center;
-      z-index: 1001;
+    .calendar-table .time-slot span.selected {
+      background-color: #3B82F6;
+      color: white;
     }
-    .time-slot-modal-content {
-      background-color: white;
-      padding: 24px;
-      border-radius: 12px;
-      width: 90%;
-      max-width: 400px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-    }
-    .time-slot-modal-content select {
-      margin: 16px 0;
+    .calendar-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: #1F2937;
     }
     @media (max-width: 600px) {
       body {
@@ -375,30 +360,22 @@
         min-width: 80px;
         border-radius: 8px;
       }
-      .flatpickr-calendar {
-        width: auto;
-        max-width: 100%;
-        font-size: 14px;
+      .calendar-table {
+        margin-top: 12px;
       }
-      .flatpickr-day {
-        margin: 1px;
-        padding: 3px;
-        font-size: 14px;
-      }
-      .selected-dates-list {
-        max-height: 120px;
-      }
-      .selected-dates-list li {
-        font-size: 14px;
-        padding: 6px;
-      }
-      .selected-dates-list button {
-        padding: 2px 6px;
+      .calendar-table th, .calendar-table td {
+        padding: 8px;
         font-size: 12px;
       }
-      .time-slot-modal-content {
-        width: 95%;
-        padding: 16px;
+      .calendar-table .date {
+        font-size: 14px;
+      }
+      .calendar-table .time-slot span {
+        font-size: 10px;
+        padding: 3px 6px;
+      }
+      .calendar-title {
+        font-size: 16px;
       }
     }
   </style>
@@ -496,16 +473,13 @@
         </div>
       </div>
 
-      <!-- 課程時間選擇（日曆） -->
+      <!-- 課程時間選擇（表格日曆） -->
       <div id="scheduleSection" class="form-group hidden">
         <h2 class="text-xl font-semibold mb-4 text-gray-800">課程時間與日期</h2>
-        <p class="text-sm text-gray-600 mb-4">請根據所選課程堂數，在日曆中選擇對應數量的日期及時段，總數需符合課程堂數。</p>
+        <p class="text-sm text-gray-600 mb-4">請根據所選課程堂數，在下方表格中點選對應數量的日期及時段，總數需符合課程堂數。</p>
         <div class="form-group">
-          <label>選擇日期與時段（在日曆中點選） *</label>
+          <label>選擇日期與時段（在表格中點選） *</label>
           <div id="calendar"></div>
-          <p class="text-sm text-gray-600 mt-2">已選日期：<span id="selectedDatesCount">0</span> / <span id="requiredDates">0</span></p>
-          <span id="datesWarning" class="warning"></span>
-          <ul id="selectedDatesList" class="selected-dates-list"></ul>
           <span id="datesError" class="error">請選擇正確數量的課程日期</span>
         </div>
         <input type="hidden" name="entry.123456795" id="selectedDates">
@@ -538,21 +512,6 @@
     </div>
   </div>
 
-  <!-- 時段選擇彈窗 -->
-  <div id="timeSlotModal" class="time-slot-modal">
-    <div class="time-slot-modal-content">
-      <h2 class="text-lg font-semibold mb-4">選擇時段</h2>
-      <p>請為 <span id="modalDate"></span> 選擇一個時段：</p>
-      <select id="timeSlotSelect" class="w-full">
-        <option value="" disabled selected>請選擇時段</option>
-      </select>
-      <div class="flex justify-between mt-6 gap-4">
-        <button class="cancel" onclick="cancelTimeSlotSelection()">取消</button>
-        <button class="confirm" onclick="confirmTimeSlotSelection()">確認</button>
-      </div>
-    </div>
-  </div>
-
   <!-- 感謝頁面 -->
   <div id="thankYouPage" class="hidden">
     <h2 class="text-2xl font-bold text-center mb-4">感謝您的報名！</h2>
@@ -566,20 +525,20 @@
     // 課程日期與時段數據
     const schedules = {
       '3歲至5歲': {
-        '星期一 9:30am - 10:30am': ['2025-07-07', '2025-07-14', '2025-07-21', '2025-07-28', '2025-08-04', '2025-08-11', '2025-08-18', '2025-08-25'],
-        '星期一 3:00pm - 4:00pm': ['2025-07-07', '2025-07-14', '2025-07-21', '2025-07-28', '2025-08-04', '2025-08-11', '2025-08-18', '2025-08-25'],
-        '星期二 4:15pm - 5:15pm': ['2025-07-08', '2025-07-15', '2025-07-22', '2025-07-29', '2025-08-05', '2025-08-12', '2025-08-19', '2025-08-26'],
-        '星期四 9:30am - 10:30am': ['2025-07-03', '2025-07-10', '2025-07-17', '2025-07-24', '2025-07-31', '2025-08-07', '2025-08-14', '2025-08-21', '2025-08-28'],
-        '星期四 3:00pm - 4:00pm': ['2025-07-03', '2025-07-10', '2025-07-17', '2025-07-24', '2025-07-31', '2025-08-07', '2025-08-14', '2025-08-21', '2025-08-28'],
-        '星期六 11:30am - 12:30pm': ['2025-07-05', '2025-07-12', '2025-07-19', '2025-07-26', '2025-08-02', '2025-08-09', '2025-08-16', '2025-08-23', '2025-08-30'],
-        '星期六 2:30pm - 3:30pm': ['2025-07-05', '2025-07-12', '2025-07-19', '2025-07-26', '2025-08-02', '2025-08-09', '2025-08-16', '2025-08-23', '2025-08-30']
+        '星期一 9:30am - 10:30am': { displayTime: '9:30am', dates: ['2025-07-07', '2025-07-14', '2025-07-21', '2025-07-28', '2025-08-04', '2025-08-11', '2025-08-18', '2025-08-25'] },
+        '星期一 3:00pm - 4:00pm': { displayTime: '3:00pm', dates: ['2025-07-07', '2025-07-14', '2025-07-21', '2025-07-28', '2025-08-04', '2025-08-11', '2025-08-18', '2025-08-25'] },
+        '星期二 4:15pm - 5:15pm': { displayTime: '4:15pm', dates: ['2025-07-08', '2025-07-15', '2025-07-22', '2025-07-29', '2025-08-05', '2025-08-12', '2025-08-19', '2025-08-26'] },
+        '星期四 9:30am - 10:30am': { displayTime: '9:30am', dates: ['2025-07-03', '2025-07-10', '2025-07-17', '2025-07-24', '2025-07-31', '2025-08-07', '2025-08-14', '2025-08-21', '2025-08-28'] },
+        '星期四 3:00pm - 4:00pm': { displayTime: '3:00pm', dates: ['2025-07-03', '2025-07-10', '2025-07-17', '2025-07-24', '2025-07-31', '2025-08-07', '2025-08-14', '2025-08-21', '2025-08-28'] },
+        '星期六 11:30am - 12:30pm': { displayTime: '11:30am', dates: ['2025-07-05', '2025-07-12', '2025-07-19', '2025-07-26', '2025-08-02', '2025-08-09', '2025-08-16', '2025-08-23', '2025-08-30'] },
+        '星期六 2:30pm - 3:30pm': { displayTime: '2:30pm', dates: ['2025-07-05', '2025-07-12', '2025-07-19', '2025-07-26', '2025-08-02', '2025-08-09', '2025-08-16', '2025-08-23', '2025-08-30'] }
       },
       '6歲或以上': {
-        '星期一 5:30pm - 6:30pm': ['2025-07-07', '2025-07-14', '2025-07-21', '2025-07-28', '2025-08-04', '2025-08-11', '2025-08-18', '2025-08-25'],
-        '星期二 3:00pm - 4:00pm': ['2025-07-08', '2025-07-15', '2025-07-22', '2025-07-29', '2025-08-05', '2025-08-12', '2025-08-19', '2025-08-26'],
-        '星期四 5:30pm - 6:30pm': ['2025-07-03', '2025-07-10', '2025-07-17', '2025-07-24', '2025-07-31', '2025-08-07', '2025-08-14', '2025-08-21', '2025-08-28'],
-        '星期六 10:00am - 11:00am': ['2025-07-05', '2025-07-12', '2025-07-19', '2025-07-26', '2025-08-02', '2025-08-09', '2025-08-16', '2025-08-23', '2025-08-30'],
-        '星期六 3:45pm - 4:45pm': ['2025-07-05', '2025-07-12', '2025-07-19', '2025-07-26', '2025-08-02', '2025-08-09', '2025-08-16', '2025-08-23', '2025-08-30']
+        '星期一 5:30pm - 6:30pm': { displayTime: '5:30pm', dates: ['2025-07-07', '2025-07-14', '2025-07-21', '2025-07-28', '2025-08-04', '2025-08-11', '2025-08-18', '2025-08-25'] },
+        '星期二 3:00pm - 4:00pm': { displayTime: '3:00pm', dates: ['2025-07-08', '2025-07-15', '2025-07-22', '2025-07-29', '2025-08-05', '2025-08-12', '2025-08-19', '2025-08-26'] },
+        '星期四 5:30pm - 6:30pm': { displayTime: '5:30pm', dates: ['2025-07-03', '2025-07-10', '2025-07-17', '2025-07-24', '2025-07-31', '2025-08-07', '2025-08-14', '2025-08-21', '2025-08-28'] },
+        '星期六 10:00am - 11:00am': { displayTime: '10:00am', dates: ['2025-07-05', '2025-07-12', '2025-07-19', '2025-07-26', '2025-08-02', '2025-08-09', '2025-08-16', '2025-08-23', '2025-08-30'] },
+        '星期六 3:45pm - 4:45pm': { displayTime: '3:45pm', dates: ['2025-07-05', '2025-07-12', '2025-07-19', '2025-07-26', '2025-08-02', '2025-08-09', '2025-08-16', '2025-08-23', '2025-08-30'] }
       }
     };
 
@@ -641,137 +600,163 @@
     }
 
     // Calendar initialization
-    let flatpickrInstance;
     let previousSelectedDates = []; // Store { date, timeSlot } objects
-    let pendingDate = null;
+
+    function generateCalendarDates() {
+      const julyStart = new Date('2025-07-01');
+      const julyEnd = new Date('2025-07-31');
+      const augustStart = new Date('2025-08-01');
+      const augustEnd = new Date('2025-08-31');
+      const julyDates = [];
+      const augustDates = [];
+      let currentDate = new Date(julyStart);
+
+      while (currentDate <= julyEnd) {
+        julyDates.push(new Date(currentDate));
+        currentDate.setDate(currentDate.getDate() + 1);
+      }
+      currentDate = new Date(augustStart);
+      while (currentDate <= augustEnd) {
+        augustDates.push(new Date(currentDate));
+        currentDate.setDate(currentDate.getDate() + 1);
+      }
+      return { july: julyDates, august: augustDates };
+    }
 
     function updateCalendar() {
       const classType = document.getElementById('classType').value;
       const calendarContainer = document.getElementById('calendar');
-      const selectedDatesList = document.getElementById('selectedDatesList');
+      const scheduleSection = document.getElementById('scheduleSection');
       const courseOption = document.getElementById('courseOption').value;
       const requiredClasses = courseOption ? parseInt(courseOption.match(/\d+/)[0]) : 0;
 
-      document.getElementById('requiredDates').textContent = requiredClasses;
+      console.log('Updating calendar for classType:', classType);
+      console.log('Course option:', courseOption, 'Required classes:', requiredClasses);
 
-      if (flatpickrInstance) flatpickrInstance.destroy();
+      // 清空日曆容器
+      calendarContainer.innerHTML = '';
 
-      // Get all available dates for the selected class type
+      // 如果有選擇班別，顯示課程時間與日期區塊
+      if (classType) {
+        console.log('Showing schedule section');
+        scheduleSection.classList.remove('hidden');
+      } else {
+        console.log('Hiding schedule section');
+        scheduleSection.classList.add('hidden');
+        return;
+      }
+
+      // 獲取可用日期
       const availableDates = classType && schedules[classType]
-        ? [...new Set(Object.values(schedules[classType]).flat())]
+        ? [...new Set(Object.values(schedules[classType]).flatMap(slot => slot.dates))]
         : [];
 
-      flatpickrInstance = flatpickr(calendarContainer, {
-        inline: true,
-        enable: availableDates,
-        dateFormat: 'Y-m-d',
-        locale: {
-          firstDayOfWeek: 1,
-          weekdays: { shorthand: ['日', '一', '二', '三', '四', '五', '六'], longhand: ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'] }
-        },
-        maxDate: '2025-08-30',
-        minDate: '2025-07-03',
-        mode: 'multiple',
-        defaultDate: previousSelectedDates.map(d => d.date),
-        onChange: (selectedDates, dateStr, instance) => {
-          selectedDates.sort((a, b) => a - b);
-          const newDateStr = selectedDates.length > previousSelectedDates.length
-            ? selectedDates.find(d => !previousSelectedDates.some(pd => pd.date === `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, '0')}-${d.getDate().toString().padStart(2, '0')}`))
-            : null;
+      console.log('Available dates:', availableDates);
 
-          if (newDateStr) {
-            const formattedDate = `${newDateStr.getFullYear()}-${(newDateStr.getMonth() + 1).toString().padStart(2, '0')}-${newDateStr.getDate().toString().padStart(2, '0')}`;
-            showTimeSlotModal(formattedDate);
-          } else {
-            // Handle deselection
-            const deselectedDate = previousSelectedDates.find(pd => !selectedDates.some(d => pd.date === `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, '0')}-${d.getDate().toString().padStart(2, '0')}`));
-            if (deselectedDate) {
-              previousSelectedDates = previousSelectedDates.filter(pd => pd.date !== deselectedDate.date);
-              updateDateList(previousSelectedDates, requiredClasses);
-              instance.setDate(previousSelectedDates.map(d => d.date), false);
-            }
+      if (availableDates.length === 0) {
+        console.warn('No available dates for selected class type');
+        calendarContainer.innerHTML = '<p class="text-gray-600">無可用課程日期</p>';
+        return;
+      }
+
+      // 生成 7 月和 8 月日曆
+      const { july, august } = generateCalendarDates();
+
+      // 生成表格的共用函數
+      function createCalendarTable(dates, monthName, tableClass) {
+        const weeks = [];
+        let week = [];
+        dates.forEach((date, index) => {
+          if (date.getDay() === 1 || week.length === 0) {
+            if (week.length > 0) weeks.push(week);
+            week = [];
           }
-        }
-      });
+          week.push(date);
+          if (index === dates.length - 1 && week.length > 0) weeks.push(week);
+        });
 
-      updateDateList(previousSelectedDates, requiredClasses);
+        const title = document.createElement('div');
+        title.className = 'calendar-title';
+        title.textContent = `2025年${monthName}`;
 
-      if (!classType) {
-        calendarContainer.style.pointerEvents = 'none';
-        calendarContainer.style.opacity = '0.5';
-      } else {
-        calendarContainer.style.pointerEvents = 'auto';
-        calendarContainer.style.opacity = '1';
+        const table = document.createElement('table');
+        table.className = `calendar-table ${tableClass}`;
+        const thead = document.createElement('thead');
+        const headerRow = document.createElement('tr');
+        ['星期一', '星期二', '星期三', '星期四', '星期五', '星期六', '星期日'].forEach(day => {
+          const th = document.createElement('th');
+          th.textContent = day;
+          headerRow.appendChild(th);
+        });
+        thead.appendChild(headerRow);
+        table.appendChild(thead);
+
+        const tbody = document.createElement('tbody');
+        weeks.forEach(week => {
+          const tr = document.createElement('tr');
+          const weekDays = Array(7).fill(null);
+          week.forEach(date => {
+            weekDays[date.getDay() === 0 ? 6 : date.getDay() - 1] = date;
+          });
+
+          weekDays.forEach(day => {
+            const td = document.createElement('td');
+            if (day) {
+              const dateStr = `${day.getFullYear()}-${(day.getMonth() + 1).toString().padStart(2, '0')}-${day.getDate().toString().padStart(2, '0')}`;
+              if (availableDates.includes(dateStr)) {
+                const dateDiv = document.createElement('div');
+                dateDiv.className = 'date';
+                dateDiv.textContent = `${day.getMonth() + 1}/${day.getDate()}`;
+                td.appendChild(dateDiv);
+                const timeSlots = Object.entries(schedules[classType]).filter(([_, slot]) => slot.dates.includes(dateStr));
+                if (timeSlots.length > 0) {
+                  const slotDiv = document.createElement('div');
+                  slotDiv.className = 'time-slot';
+                  timeSlots.forEach(([timeSlot, slot]) => {
+                    const span = document.createElement('span');
+                    span.textContent = slot.displayTime;
+                    span.dataset.date = dateStr;
+                    span.dataset.timeSlot = timeSlot;
+                    span.classList.toggle('selected', previousSelectedDates.some(d => d.date === dateStr && d.timeSlot === timeSlot));
+                    span.addEventListener('click', () => {
+                      const isSelected = span.classList.contains('selected');
+                      if (isSelected) {
+                        previousSelectedDates = previousSelectedDates.filter(d => !(d.date === dateStr && d.timeSlot === timeSlot));
+                        span.classList.remove('selected');
+                      } else {
+                        previousSelectedDates.push({ date: dateStr, timeSlot });
+                        span.classList.add('selected');
+                      }
+                      previousSelectedDates.sort((a, b) => a.date.localeCompare(b.date));
+                      document.getElementById('selectedDates').value = previousSelectedDates
+                        .map(d => `${d.date.replace(/-/g, '年').replace(/年(\d{2})/, '年$1月').replace(/月(\d{2})/, '月$1日')} ${d.timeSlot}`)
+                        .join(', ');
+                    });
+                    slotDiv.appendChild(span);
+                  });
+                  td.appendChild(slotDiv);
+                }
+              } else {
+                const dateDiv = document.createElement('div');
+                dateDiv.className = 'date';
+                dateDiv.textContent = `${day.getMonth() + 1}/${day.getDate()}`;
+                td.appendChild(dateDiv);
+                td.className = 'disabled';
+              }
+            } else {
+              td.className = 'disabled';
+            }
+            tr.appendChild(td);
+          });
+          tbody.appendChild(tr);
+        });
+        table.appendChild(tbody);
+        calendarContainer.appendChild(title);
+        calendarContainer.appendChild(table);
       }
-    }
 
-    function showTimeSlotModal(date) {
-      pendingDate = date;
-      const classType = document.getElementById('classType').value;
-      const timeSlotSelect = document.getElementById('timeSlotSelect');
-      timeSlotSelect.innerHTML = '<option value="" disabled selected>請選擇時段</option>';
-      const availableSlots = Object.keys(schedules[classType]).filter(slot => schedules[classType][slot].includes(date));
-      availableSlots.forEach(slot => {
-        let option = document.createElement('option');
-        option.value = slot;
-        option.text = slot;
-        timeSlotSelect.appendChild(option);
-      });
-      document.getElementById('modalDate').textContent = date.replace(/-/g, '年').replace(/年(\d{2})/, '年$1月').replace(/月(\d{2})/, '月$1日');
-      document.getElementById('timeSlotModal').style.display = 'flex';
-    }
-
-    function confirmTimeSlotSelection() {
-      const timeSlot = document.getElementById('timeSlotSelect').value;
-      if (timeSlot && pendingDate) {
-        previousSelectedDates.push({ date: pendingDate, timeSlot });
-        previousSelectedDates.sort((a, b) => a.date.localeCompare(b.date));
-        flatpickrInstance.setDate(previousSelectedDates.map(d => d.date), false);
-        updateDateList(previousSelectedDates, parseInt(document.getElementById('courseOption').value.match(/\d+/)[0]));
-        document.getElementById('timeSlotModal').style.display = 'none';
-        pendingDate = null;
-      }
-    }
-
-    function cancelTimeSlotSelection() {
-      document.getElementById('timeSlotModal').style.display = 'none';
-      pendingDate = null;
-      flatpickrInstance.setDate(previousSelectedDates.map(d => d.date), false);
-    }
-
-    function updateDateList(dates, requiredClasses) {
-      const selectedDatesList = document.getElementById('selectedDatesList');
-      const datesWarning = document.getElementById('datesWarning');
-      selectedDatesList.innerHTML = '';
-      const formattedDates = dates.map(d => `${d.date.replace(/-/g, '年').replace(/年(\d{2})/, '年$1月').replace(/月(\d{2})/, '月$1日')} ${d.timeSlot}`);
-      document.getElementById('selectedDates').value = formattedDates.join(', ');
-      document.getElementById('selectedDatesCount').textContent = dates.length;
-
-      if (dates.length > requiredClasses) {
-        datesWarning.textContent = `已選 ${dates.length} 堂，超出 ${requiredClasses} 堂限額，請移除 ${dates.length - requiredClasses} 堂。`;
-        datesWarning.style.display = 'block';
-      } else if (dates.length < requiredClasses) {
-        datesWarning.textContent = `已選 ${dates.length} 堂，請再選 ${requiredClasses - dates.length} 堂。`;
-        datesWarning.style.display = 'block';
-      } else {
-        datesWarning.textContent = '';
-        datesWarning.style.display = 'none';
-      }
-
-      formattedDates.forEach((date, index) => {
-        const li = document.createElement('li');
-        li.textContent = date;
-        const removeBtn = document.createElement('button');
-        removeBtn.textContent = '移除';
-        removeBtn.onclick = () => {
-          const newDates = dates.filter((_, i) => i !== index);
-          previousSelectedDates = newDates;
-          flatpickrInstance.setDate(newDates.map(d => d.date), false);
-          updateDateList(newDates, requiredClasses);
-        };
-        li.appendChild(removeBtn);
-        selectedDatesList.appendChild(li);
-      });
+      createCalendarTable(july, '7月', 'july');
+      createCalendarTable(august, '8月', 'august');
     }
 
     // Form validation and submission
@@ -840,7 +825,7 @@
         isValid = false;
       }
 
-      const selectedDates = document.getElementById('selectedDates').value.split(', ').filter(d => d);
+      const selectedDates = previousSelectedDates;
       const requiredClasses = courseOption.value ? parseInt(courseOption.value.match(/\d+/)[0]) : 0;
       if (selectedDates.length !== requiredClasses) {
         datesError.style.display = 'block';
@@ -856,7 +841,9 @@
         document.getElementById('confirmCourse').textContent = courseOption.value;
         document.getElementById('confirmClassType').textContent = classType.value;
         const confirmDatesList = document.getElementById('confirmDates');
-        confirmDatesList.innerHTML = selectedDates.map(date => `<li>${date}</li>`).join('');
+        confirmDatesList.innerHTML = selectedDates
+          .map(date => `<li>${date.date.replace(/-/g, '年').replace(/年(\d{2})/, '年$1月').replace(/月(\d{2})/, '月$1日')} ${date.timeSlot}</li>`)
+          .join('');
         confirmModal.style.display = 'flex';
       }
     });
@@ -892,12 +879,8 @@
       document.getElementById('courseOption').value = '';
       document.getElementById('scheduleSection').classList.add('hidden');
       document.getElementById('selectedDates').value = '';
-      document.getElementById('selectedDatesCount').textContent = '0';
-      document.getElementById('selectedDatesList').innerHTML = '';
-      document.getElementById('datesWarning').textContent = '';
-      document.getElementById('datesWarning').style.display = 'none';
       previousSelectedDates = [];
-      if (flatpickrInstance) flatpickrInstance.clear();
+      document.getElementById('calendar').innerHTML = '';
       nameError.style.display = 'none';
       phoneError.style.display = 'none';
       birthdateError.style.display = 'none';
@@ -914,6 +897,9 @@
       formContainer.style.display = 'block';
       resetForm();
     }
+
+    // 初始化日曆
+    updateCalendar();
   </script>
 </body>
 </html>
