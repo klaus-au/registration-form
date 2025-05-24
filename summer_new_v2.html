@@ -28,7 +28,7 @@
       transform: translateY(-4px);
     }
     .form-group {
-      margin-bottom: 36px;
+      margin-bottom: 16px;
     }
     label {
       display: block;
@@ -236,9 +236,8 @@
       color: #276749;
     }
     .selected-dates-list {
-      margin-top: 12px;
-      max-height: 160px;
-      overflow-y: auto;
+      margin-top: 8px;
+      height: auto;
       border: 1px solid #E2E8F0;
       border-radius: 8px;
       padding: 8px;
@@ -267,6 +266,7 @@
     }
     .calendar-table-container {
       width: 100%;
+      margin: 0 -24px;
     }
     .calendar-table {
       width: 100%;
@@ -294,7 +294,7 @@
     }
     .calendar-table td {
       vertical-align: top;
-      height: 100px;
+      height: 110px;
       background-color: #F7FAFC;
       transition: background-color 0.2s;
     }
@@ -318,7 +318,7 @@
     .calendar-table .time-slot {
       display: block;
       font-size: 12px;
-      margin: 3px 0;
+      margin: 6px 0;
       padding: 3px 6px;
       border-radius: 4px;
       cursor: pointer;
@@ -342,8 +342,30 @@
       .form-container, #thankYouPage {
         padding: 32px;
       }
+      .calendar-table-container {
+        margin: 0 -16px;
+      }
+      .calendar-table th, .calendar-table td {
+        padding: 4px;
+        font-size: 11px;
+        width: calc(100% / 7);
+      }
+      .calendar-table td {
+        height: 80px;
+      }
+      .calendar-table .date-header {
+        font-size: 12px;
+        width: 18px;
+        height: 18px;
+        line-height: 18px;
+      }
+      .calendar-table .time-slot {
+        font-size: 9px;
+        padding: 1px 3px;
+        margin: 4px 0;
+      }
       .form-group {
-        margin-bottom: 28px;
+        margin-bottom: 16px;
       }
       h1 {
         font-size: 28px;
@@ -411,35 +433,13 @@
         min-width: 80px;
         border-radius: 8px;
       }
-      .selected-dates-list {
-        max-height: 140px;
-      }
       .selected-dates-list li {
-        font-size: 14px;
-        padding: 6px 10px;
+        font-size: 13px;
+        padding: 4px 8px;
       }
       .selected-dates-list button {
-        padding: 3px 6px;
-        font-size: 12px;
-      }
-      .calendar-table th, .calendar-table td {
-        padding: 4px;
+        padding: 2px 4px;
         font-size: 11px;
-        width: calc(100% / 7);
-      }
-      .calendar-table td {
-        height: 70px;
-      }
-      .calendar-table .date-header {
-        font-size: 12px;
-        width: 18px;
-        height: 18px;
-        line-height: 18px;
-      }
-      .calendar-table .time-slot {
-        font-size: 9px;
-        padding: 1px 3px;
-        margin: 2px 0;
       }
     }
   </style>
