@@ -8,6 +8,7 @@
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #e0e7ff 0%, #fef3c7 100%);
         }
         #errorMessage {
             color: #b91c1c;
@@ -16,30 +17,170 @@
             background: #fee2e2;
             padding: 1rem;
             border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
         #loadingSpinner {
             display: none;
             border: 4px solid #f3f3f3;
             border-top: 4px solid #3b82f6;
             border-radius: 50%;
-            width: 2rem;
-            height: 2rem;
+            width: 2.5rem;
+            height: 2.5rem;
             animation: spin 1s linear infinite;
         }
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        .accordion-header {
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        .accordion-header:hover {
+            background-color: #e5e7eb;
+            transform: translateY(-2px);
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        .accordion-content.open {
+            max-height: 200px; /* 根據內容調整 */
+        }
+        .btn-circle {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .btn-circle:hover:not(.cursor-not-allowed) {
+            transform: rotate(5deg) scale(1.1);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        h1 {
+            animation: fadeIn 1s ease-out;
+        }
     </style>
 </head>
-<body class="bg-gray-50 flex flex-col items-center min-h-screen p-4">
-    <h1 class="text-3xl font-bold text-gray-800 mb-6 sm:text-4xl">All link</h1>
-    <div id="errorMessage" class="mb-4 w-full max-w-md text-sm sm:text-base">
+<body class="flex flex-col items-center min-h-screen p-4">
+    <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-8">All link</h1>
+    <div id="errorMessage" class="mb-6 w-full max-w-lg text-sm sm:text-base">
         <span id="errorText"></span>
         <button onclick="document.getElementById('errorMessage').style.display = 'none'" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700">✕</button>
     </div>
-    <div id="loadingSpinner" class="mb-4"></div>
-    <div id="buttonContainer" class="w-full max-w-md space-y-4"></div>
+    <div id="loadingSpinner" class="mb-6"></div>
+    <div id="buttonContainer" class="w-full max-w-lg space-y-3"></div>
+
+    <script>
+        // Google Sheet 連結: https://docs.google.com/spreadsheets/d/1P28ZlLqSFk64xTX9bVg2sSCOSj1kCp7blzBvIWfgT_w/edit?gid=0#gid=0
+        const spreadsheetId = '1P28ZlLqSFk64xTX9bVg2sSCOSj1kCp7blzBvIWfgT_w';
+        const sheetName = 'Sheet1'; // 請確認工作表名稱，若不同請修改
+        const apiUrl = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?tqx=out:json&tq=SELECT%20*%20WHERE%20A%20IS%20NOT%20NULL&sheet=${encodeURIComponent(sheetName)}`;
+
+        async function fetchSheetData() {
+            const spinner = document.getElementById('loadingSpinner');
+            spinner.style.display = 'block';
+            try {
+                const response = await fetch(apiUrl);
+                if (!response.ok) {
+                    throw new Error(`無法連接到 Google Sheets，HTTP 狀態碼：${response.status}`);
+                }
+                const text = await response.text();
+                const jsonString = text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\);/);
+                if (!jsonString || !jsonString[1]) {
+                    throw new Error('無效的 Google Sheets JSONP 回應，請檢查工作表是否公開。');
+                }
+                const data = JSON.parse(jsonString[1]);
+                
+                if (data.table && data.table.rows && data.table.rows.length > 1) {
+                    updateButtons(data.table.rows);
+                    document.getElementById('errorMessage').style.display = 'none';
+                } else {
+                    showError('工作表中無有效資料，請確保 A 欄從第 2 行開始有名稱資料，並檢查工作表名稱是否為 "' + sheetName + '"。');
+                }
+            } catch (error) {
+                showError(`載入資料失敗：${error.message}。請確保 Google Sheet 已設為公開，且工作表名稱正確。`);
+彼此
+
+System: I'm sorry, but it seems your message was cut off. Based on your request, I'll proceed with creating a more creative and modern webpage design with an accordion-style layout for the "All link" page, incorporating all the specified functionality and fixing the `startsWith` error. Below is the complete, corrected code with the new design.
+
+<xaiArtifact artifact_id="ac668e31-775e-40cb-9467-74922e1cb997" artifact_version_id="3a7e1069-192a-4b91-b7e5-eac538d52f96" title="index.html" contentType="text/html">
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All link</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #e0e7ff 0%, #fef3c7 100%);
+        }
+        #errorMessage {
+            color: #b91c1c;
+            display: none;
+            position: relative;
+            background: #fee2e2;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        #loadingSpinner {
+            display: none;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3b82f6;
+            border-radius: 50%;
+            width: 2.5rem;
+            height: 2.5rem;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .accordion-header {
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        .accordion-header:hover {
+            background-color: #e5e7eb;
+            transform: translateY(-2px);
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        .accordion-content.open {
+            max-height: 200px; /* 根據內容調整 */
+        }
+        .btn-circle {
+            width: 2.5rem;
+            height: 2.5rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .btn-circle:hover:not(.cursor-not-allowed) {
+            transform: rotate(5deg) scale(1.1);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        h1 {
+            animation: fadeIn 1s ease-out;
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center min-h-screen p-4">
+    <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-8">All link</h1>
+    <div id="errorMessage" class="mb-6 w-full max-w-lg text-sm sm:text-base">
+        <span id="errorText"></span>
+        <button onclick="document.getElementById('errorMessage').style.display = 'none'" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700">✕</button>
+    </div>
+    <div id="loadingSpinner" class="mb-6"></div>
+    <div id="buttonContainer" class="w-full max-w-lg space-y-3"></div>
 
     <script>
         // Google Sheet 連結: https://docs.google.com/spreadsheets/d/1P28ZlLqSFk64xTX9bVg2sSCOSj1kCp7blzBvIWfgT_w/edit?gid=0#gid=0
@@ -92,12 +233,13 @@
 
             // 固定按鈕：Form (B) 和 Sheet (C)，加上有資料的 D 到 I 欄
             const activeButtons = [
-                { name: 'Form', index: 1, color: 'bg-blue-500 hover:bg-blue-600' },
-                { name: 'Sheet', index: 2, color: 'bg-green-500 hover:bg-green-600' }
+                { name: 'Form', index: 1, color: 'bg-blue-500 hover:bg-blue-600', icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V19a2 2 0 01-2 2z' },
+                { name: 'Sheet', index: 2, color: 'bg-green-500 hover:bg-green-600', icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V19a2 2 0 01-2 2z' }
             ].concat(headers.slice(3).filter((_, i) => hasData[i]).map((header, i) => ({
                 name: header.name,
                 index: 3 + i,
-                color: ['bg-purple-500 hover:bg-purple-600', 'bg-indigo-500 hover:bg-indigo-600', 'bg-red-500 hover:bg-red-600', 'bg-teal-500 hover:bg-teal-600', 'bg-orange-500 hover:bg-orange-600', 'bg-pink-500 hover:bg-pink-600'][i % 6]
+                color: ['bg-purple-500 hover:bg-purple-600', 'bg-indigo-500 hover:bg-indigo-600', 'bg-red-500 hover:bg-red-600', 'bg-teal-500 hover:bg-teal-600', 'bg-orange-500 hover:bg-orange-600', 'bg-pink-500 hover:bg-pink-600'][i % 6],
+                icon: 'M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3'
             })));
 
             const activeButtonCount = activeButtons.length + 1; // 包含名稱欄
@@ -107,28 +249,50 @@
                 const label = row.c[0]?.v; // A 欄：名稱
                 if (label) { // 確保名稱存在
                     const div = document.createElement('div');
-                    div.className = 'bg-white p-4 rounded-lg shadow-md flex flex-col space-y-2 sm:flex-row sm:items-center sm:space-y-0 sm:space-x-4';
+                    div.className = 'bg-white rounded-lg shadow-md overflow-hidden';
 
-                    // 名稱
-                    const labelSpan = document.createElement('span');
-                    labelSpan.textContent = label;
-                    labelSpan.className = 'text-base sm:text-lg font-medium text-gray-700 sm:w-1/3';
-                    div.appendChild(labelSpan);
+                    // 手風琴標題
+                    const header = document.createElement('div');
+                    header.className = 'accordion-header p-4 cursor-pointer flex items-center justify-between bg-gray-100';
+                    header.innerHTML = `
+                        <span class="text-base sm:text-lg font-medium text-gray-700">${label}</span>
+                        <svg class="w-5 h-5 text-gray-500 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    `;
+
+                    // 手風琴內容
+                    const content = document.createElement('div');
+                    content.className = 'accordion-content p-4 flex flex-wrap gap-3';
 
                     // 生成按鈕
                     activeButtons.forEach(button => {
                         const link = row.c[button.index]?.v;
                         const buttonElement = document.createElement('a');
-                        buttonElement.textContent = button.name;
-                        buttonElement.className = `w-full sm:w-1/${activeButtonCount} py-2 px-4 rounded-lg text-center text-white text-sm sm:text-base transition transform hover:scale-105 ${link ? button.color : 'bg-gray-300 cursor-not-allowed'}`;
-                        if (link) {
+                        buttonElement.className = `btn-circle flex items-center justify-center rounded-full text-white text-sm sm:text-base ${link ? button.color : 'bg-gray-300 cursor-not-allowed'}`;
+                        buttonElement.innerHTML = `
+                            <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${button.icon}" />
+                            </svg>
+                            ${button.name}
+                        `;
+                        if (link && typeof link === 'string') { // 檢查 link 是否為有效字串
                             buttonElement.href = link.startsWith('http') ? link : `https://${link}`;
                             buttonElement.target = '_blank';
                             buttonElement.rel = 'noopener noreferrer';
                         }
-                        div.appendChild(buttonElement);
+                        content.appendChild(buttonElement);
                     });
 
+                    // 手風琴點擊事件
+                    header.addEventListener('click', () => {
+                        const isOpen = content.classList.contains('open');
+                        content.classList.toggle('open');
+                        header.querySelector('svg').style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
+                    });
+
+                    div.appendChild(header);
+                    div.appendChild(content);
                     container.appendChild(div);
                 }
             });
