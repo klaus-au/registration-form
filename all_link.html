@@ -7,10 +7,11 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #0a0a1a;
+            font-family: 'Georgia', serif;
+            background: #2c1b12;
             color: #fff;
             overflow-x: hidden;
+            perspective: 1000px;
         }
         #errorMessage {
             color: #b91c1c;
@@ -21,114 +22,132 @@
             background: #fee2e2;
             padding: 1rem;
             border-radius: 0.5rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
             z-index: 1000;
         }
         #loadingSpinner {
             display: none;
             width: 3rem;
             height: 3rem;
-            border-radius: 50%;
-            background: radial-gradient(circle, #60a5fa 10%, transparent 10.01%);
-            background-size: 1rem 1rem;
-            animation: orbit 1.5s linear infinite;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23f59e0b" stroke-width="2"><path d="M12 4v4m0 8v4M4 12h4m8 0h4M5.172 5.172l2.828 2.828m8 8l2.828 2.828M5.172 18.828l2.828-2.828m8-8l2.828-2.828"/></svg>') center/cover;
+            animation: flipBook 1s linear infinite;
         }
-        @keyframes orbit {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        @keyframes flipBook {
+            0% { transform: rotateY(0deg); }
+            100% { transform: rotateY(360deg); }
         }
-        .planet {
-            width: 6rem;
-            height: 6rem;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #4b6cb7, #182848);
+        .bookshelf {
+            background: linear-gradient(180deg, #3c2f2f, #2c1b12);
+            padding: 2rem;
+            transform: translateZ(-100px);
+            position: relative;
+            z-index: 1;
+        }
+        .book {
+            width: 10rem;
+            height: 14rem;
+            background: linear-gradient(90deg, #1a120b 10%, #4a3728 90%);
+            border: 2px solid #d4af37;
+            border-radius: 0.25rem 0.5rem 0.5rem 0.25rem;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             position: relative;
-            animation: orbit 10s linear infinite;
+            transition: transform 0.6s ease;
+            transform-style: preserve-3d;
             will-change: transform;
         }
-        .planet-label {
-            text-align: center;
-            font-size: 1rem;
-            font-weight: bold;
-            color: #fff;
-            text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+        .book.open {
+            transform: rotateY(-90deg);
         }
-        .satellites {
+        .book-content {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            top: 0;
+            left: 100%;
+            width: 12rem;
+            height: 14rem;
+            background: #f5f5f5;
+            border: 2px solid #d4af37;
+            border-radius: 0 0.5rem 0.5rem 0;
+            padding: 1rem;
             display: none;
-            gap: 1rem;
-        }
-        .satellites.open {
-            display: flex;
             flex-wrap: wrap;
-            justify-content: center;
+            gap: 0.5rem;
+            transform: rotateY(90deg);
+            transform-origin: left;
+            color: #1a120b;
         }
-        .satellite {
+        .book-content.open {
+            display: flex;
+        }
+        .bookmark {
             width: 4rem;
-            height: 4rem;
-            border-radius: 50%;
+            height: 2rem;
+            background: linear-gradient(45deg, var(--color), var(--hover));
+            clip-path: polygon(0 0, 80% 0, 100% 50%, 80% 100%, 0 100%);
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
             overflow: hidden;
-            animation: glow 2s ease-in-out infinite;
+            animation: wave 2s ease-in-out infinite;
             will-change: box-shadow;
         }
-        .satellite::after {
+        .bookmark::after {
             content: '';
             position: absolute;
             width: 100%;
             height: 100%;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.3), transparent 70%);
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.5), transparent 70%);
             opacity: 0;
             transition: opacity 0.3s ease;
         }
-        .satellite:hover:not(.cursor-not-allowed)::after {
+        .bookmark:hover:not(.cursor-not-allowed)::after {
             opacity: 1;
         }
-        @keyframes glow {
-            0%, 100% { box-shadow: 0 0 10px rgba(255, 255, 255, 0.3); }
-            50% { box-shadow: 0 0 20px rgba(255, 255, 255, 0.5); }
+        @keyframes wave {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(2px); }
         }
-        .title-letter {
-            display: inline-block;
-            opacity: 0;
-            animation: fadeInLetter 0.5s ease forwards;
+        .title-svg {
+            stroke: #f59e0b;
+            stroke-width: 2;
+            fill: none;
+            stroke-dasharray: 200;
+            stroke-dashoffset: 200;
+            animation: draw 3s ease forwards;
         }
-        @keyframes fadeInLetter {
-            from { opacity: 0; transform: translateY(10px) rotate(10deg); }
-            to { opacity: 1; transform: translateY(0) rotate(0deg); }
+        @keyframes draw {
+            to { stroke-dashoffset: 0; }
         }
-        canvas#stars {
+        canvas#dust {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -1;
+            z-index: 0;
+            opacity: 0.3;
         }
-        .container {
-            perspective: 1000px;
+        .parallax {
+            transition: transform 0.3s ease;
         }
     </style>
 </head>
 <body class="flex flex-col items-center min-h-screen p-4">
-    <canvas id="stars"></canvas>
-    <h1 id="title" class="text-3xl sm:text-4xl font-bold mb-8"></h1>
+    <canvas id="dust"></canvas>
+    <h1 class="mb-8">
+        <svg class="w-48 h-16 sm:w-64 sm:h-20" viewBox="0 0 200 50">
+            <path class="title-svg" d="M10 40 Q20 10 30 40 M40 40 Q50 10 60 40 M70 10 V40 M80 10 V40 H90 M110 40 Q120 10 130 40 M140 10 V40 H150 M160 10 V40 H170 M180 10 V40" />
+        </svg>
+    </h1>
     <div id="errorMessage" class="text-sm sm:text-base">
         <span id="errorText"></span>
         <button onclick="document.getElementById('errorMessage').style.display = 'none'" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700">✕</button>
     </div>
     <div id="loadingSpinner" class="mb-6"></div>
-    <div id="buttonContainer" class="container w-full grid gap-6 sm:grid-cols-2 max-w-5xl"></div>
+    <div id="buttonContainer" class="bookshelf w-full grid gap-6 sm:grid-cols-2 max-w-5xl parallax"></div>
 
     <script>
         // Google Sheet 連結: https://docs.google.com/spreadsheets/d/1P28ZlLqSFk64xTX9bVg2sSCOSj1kCp7blzBvIWfgT_w/edit?gid=0#gid=0
@@ -136,43 +155,42 @@
         const sheetName = 'Sheet1'; // 請確認工作表名稱，若不同請修改
         const apiUrl = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?tqx=out:json&tq=SELECT%20*%20WHERE%20A%20IS%20NOT%20NULL&sheet=${encodeURIComponent(sheetName)}`;
 
-        // 星雲背景
-        const canvas = document.getElementById('stars');
+        // 漂浮灰塵粒子
+        const canvas = document.getElementById('dust');
         const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
-        const stars = [];
-        for (let i = 0; i < 100; i++) {
-            stars.push({
+        const dust = [];
+        for (let i = 0; i < 50; i++) {
+            dust.push({
                 x: Math.random() * canvas.width,
                 y: Math.random() * canvas.height,
-                radius: Math.random() * 1.5 + 0.5,
-                opacity: Math.random() * 0.5 + 0.3,
-                twinkleSpeed: Math.random() * 0.02 + 0.01
+                radius: Math.random() * 1 + 0.5,
+                vx: Math.random() * 0.2 - 0.1,
+                vy: Math.random() * 0.2 - 0.1
             });
         }
-        function animateStars() {
+        function animateDust() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            stars.forEach(s => {
-                s.opacity += Math.sin(Date.now() * s.twinkleSpeed) * 0.02;
+            dust.forEach(d => {
+                d.x += d.vx;
+                d.y += d.vy;
+                if (d.x < 0 || d.x > canvas.width) d.vx *= -1;
+                if (d.y < 0 || d.y > canvas.height) d.vy *= -1;
                 ctx.beginPath();
-                ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(255, 255, 255, ${s.opacity})`;
+                ctx.arc(d.x, d.y, d.radius, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(255, 245, 220, 0.5)';
                 ctx.fill();
             });
-            requestAnimationFrame(animateStars);
+            requestAnimationFrame(animateDust);
         }
-        animateStars();
+        animateDust();
 
-        // 標題逐字淡入
-        const titleText = 'All link';
-        const titleElement = document.getElementById('title');
-        titleText.split('').forEach((char, i) => {
-            const span = document.createElement('span');
-            span.className = 'title-letter';
-            span.style.animationDelay = `${i * 0.1}s`;
-            span.textContent = char === ' ' ? '\u00A0' : char;
-            titleElement.appendChild(span);
+        // 視差效果
+        window.addEventListener('scroll', () => {
+            const parallax = document.querySelector('.parallax');
+            const scrollY = window.scrollY;
+            parallax.style.transform = `translateZ(-100px) translateY(${scrollY * 0.1}px)`;
         });
 
         async function fetchSheetData() {
@@ -220,12 +238,13 @@
 
             // 固定按鈕：Form (B) 和 Sheet (C)，加上有資料的 D 到 I 欄
             const activeButtons = [
-                { name: 'Form', index: 1, color: 'bg-blue-500 hover:bg-blue-600', icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V19a2 2 0 01-2 2z' },
-                { name: 'Sheet', index: 2, color: 'bg-green-500 hover:bg-green-600', icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V19a2 2 0 01-2 2z' }
+                { name: 'Form', index: 1, color: 'bg-blue-500', hover: 'bg-blue-600', icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V19a2 2 0 01-2 2z' },
+                { name: 'Sheet', index: 2, color: 'bg-green-500', hover: 'bg-green-600', icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V19a2 2 0 01-2 2z' }
             ].concat(headers.slice(3).filter((_, i) => hasData[i]).map((header, i) => ({
                 name: header.name,
                 index: 3 + i,
-                color: ['bg-purple-500 hover:bg-purple-600', 'bg-indigo-500 hover:bg-indigo-600', 'bg-red-500 hover:bg-red-600', 'bg-teal-500 hover:bg-teal-600', 'bg-orange-500 hover:bg-orange-600', 'bg-pink-500 hover:bg-pink-600'][i % 6],
+                color: ['bg-purple-500', 'bg-indigo-500', 'bg-red-500', 'bg-teal-500', 'bg-orange-500', 'bg-pink-500'][i % 6],
+                hover: ['bg-purple-600', 'bg-indigo-600', 'bg-red-600', 'bg-teal-600', 'bg-orange-600', 'bg-pink-600'][i % 6],
                 icon: 'M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3'
             })));
 
@@ -233,49 +252,53 @@
             rows.slice(1).forEach((row, rowIndex) => {
                 const label = row.c[0]?.v; // A 欄：名稱
                 if (label) { // 確保名稱存在
-                    const planetContainer = document.createElement('div');
-                    planetContainer.className = 'relative flex justify-center items-center my-10';
+                    const bookContainer = document.createElement('div');
+                    bookContainer.className = 'relative flex justify-center items-center';
 
-                    // 星球
-                    const planet = document.createElement('div');
-                    planet.className = 'planet';
-                    planet.style.animationDelay = `${rowIndex * 2}s`;
-                    planet.innerHTML = `<span class="planet-label">${label}</span>`;
+                    // 書本
+                    const book = document.createElement('div');
+                    book.className = 'book';
+                    book.innerHTML = `<span class="text-sm font-bold text-white transform -rotate-90 origin-center whitespace-nowrap">${label}</span>`;
 
-                    // 衛星（按鈕）
-                    const satellites = document.createElement('div');
-                    satellites.className = 'satellites';
-                    satellites.id = `satellites-${rowIndex}`;
+                    // 書頁內容
+                    const bookContent = document.createElement('div');
+                    bookContent.className = 'book-content';
+                    bookContent.id = `book-content-${rowIndex}`;
 
-                    // 生成衛星按鈕
+                    // 生成書籤按鈕
                     activeButtons.forEach(button => {
                         const link = row.c[button.index]?.v;
-                        const satellite = document.createElement('a');
-                        satellite.className = `satellite flex items-center justify-center text-white text-xs sm:text-sm ${link ? button.color : 'bg-gray-300 cursor-not-allowed'}`;
-                        satellite.innerHTML = `
+                        const bookmark = document.createElement('a');
+                        bookmark.className = `bookmark flex items-center justify-center text-white text-xs ${link ? '' : 'bg-gray-300 cursor-not-allowed'}`;
+                        bookmark.style = `--color: ${button.color}; --hover: ${button.hover};`;
+                        bookmark.innerHTML = `
                             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${button.icon}" />
                             </svg>
                             ${button.name}
                         `;
                         if (link && typeof link === 'string') { // 檢查 link 是否為有效字串
-                            satellite.href = link.startsWith('http') ? link : `https://${link}`;
-                            satellite.target = '_blank';
-                            satellite.rel = 'noopener noreferrer';
+                            bookmark.href = link.startsWith('http') ? link : `https://${link}`;
+                            bookmark.target = '_blank';
+                            bookmark.rel = 'noopener noreferrer';
                         }
-                        satellites.appendChild(satellite);
+                        bookContent.appendChild(bookmark);
                     });
 
-                    // 點擊星球切換衛星顯示
-                    planet.addEventListener('click', () => {
-                        const isOpen = satellites.classList.contains('open');
-                        document.querySelectorAll('.satellites.open').forEach(s => s.classList.remove('open'));
-                        if (!isOpen) satellites.classList.add('open');
+                    // 點擊書本切換內容顯示
+                    book.addEventListener('click', () => {
+                        const isOpen = book.classList.contains('open');
+                        document.querySelectorAll('.book.open').forEach(b => b.classList.remove('open'));
+                        document.querySelectorAll('.book-content.open').forEach(c => c.classList.remove('open'));
+                        if (!isOpen) {
+                            book.classList.add('open');
+                            bookContent.classList.add('open');
+                        }
                     });
 
-                    planetContainer.appendChild(planet);
-                    planetContainer.appendChild(satellites);
-                    container.appendChild(planetContainer);
+                    bookContainer.appendChild(book);
+                    bookContainer.appendChild(bookContent);
+                    container.appendChild(bookContainer);
                 }
             });
         }
