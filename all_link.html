@@ -8,7 +8,8 @@
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #1a202c;
+            background: #0a0a1a;
+            color: #fff;
             overflow-x: hidden;
         }
         #errorMessage {
@@ -25,81 +26,88 @@
         }
         #loadingSpinner {
             display: none;
-            border: 6px solid rgba(255, 255, 255, 0.2);
-            border-top: 6px solid #60a5fa;
-            border-radius: 50%;
             width: 3rem;
             height: 3rem;
-            animation: pulse 1.5s ease-in-out infinite;
+            border-radius: 50%;
+            background: radial-gradient(circle, #60a5fa 10%, transparent 10.01%);
+            background-size: 1rem 1rem;
+            animation: orbit 1.5s linear infinite;
         }
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 0.8; }
-            50% { transform: scale(1.2); opacity: 1; }
+        @keyframes orbit {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
-        .card {
-            perspective: 1000px;
-            width: 100%;
-            max-width: 20rem;
-            height: 10rem;
-        }
-        .card-inner {
+        .planet {
+            width: 6rem;
+            height: 6rem;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #4b6cb7, #182848);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
             position: relative;
-            width: 100%;
-            height: 100%;
-            transition: transform 0.6s;
-            transform-style: preserve-3d;
+            animation: orbit 10s linear infinite;
+            will-change: transform;
         }
-        .card:hover .card-inner {
-            transform: rotateY(180deg);
+        .planet-label {
+            text-align: center;
+            font-size: 1rem;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
         }
-        .card-front, .card-back {
+        .satellites {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: none;
+            gap: 1rem;
+        }
+        .satellites.open {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .satellite {
+            width: 4rem;
+            height: 4rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            animation: glow 2s ease-in-out infinite;
+            will-change: box-shadow;
+        }
+        .satellite::after {
+            content: '';
             position: absolute;
             width: 100%;
             height: 100%;
-            backface-visibility: hidden;
-            border-radius: 0.5rem;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            backdrop-filter: blur(10px);
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.3), transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
-        .card-front {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .satellite:hover:not(.cursor-not-allowed)::after {
+            opacity: 1;
         }
-        .card-back {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
-            transform: rotateY(180deg);
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            padding: 1rem;
-            align-items: center;
-            justify-content: center;
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 10px rgba(255, 255, 255, 0.3); }
+            50% { box-shadow: 0 0 20px rgba(255, 255, 255, 0.5); }
         }
-        .hex-button {
-            width: 3.5rem;
-            height: 4rem;
-            clip-path: polygon(25% 5%, 75% 5%, 100% 50%, 75% 95%, 25% 95%, 0% 50%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        .title-letter {
+            display: inline-block;
+            opacity: 0;
+            animation: fadeInLetter 0.5s ease forwards;
         }
-        .hex-button:hover:not(.cursor-not-allowed) {
-            transform: scale(1.1) rotate(10deg);
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+        @keyframes fadeInLetter {
+            from { opacity: 0; transform: translateY(10px) rotate(10deg); }
+            to { opacity: 1; transform: translateY(0) rotate(0deg); }
         }
-        @keyframes type {
-            from { width: 0; }
-            to { width: 100%; }
-        }
-        .title {
-            overflow: hidden;
-            white-space: nowrap;
-            animation: type 2s steps(20, end);
-        }
-        canvas#particles {
+        canvas#stars {
             position: fixed;
             top: 0;
             left: 0;
@@ -107,17 +115,20 @@
             height: 100%;
             z-index: -1;
         }
+        .container {
+            perspective: 1000px;
+        }
     </style>
 </head>
 <body class="flex flex-col items-center min-h-screen p-4">
-    <canvas id="particles"></canvas>
-    <h1 class="title text-3xl sm:text-4xl font-bold text-white mb-8">All link</h1>
+    <canvas id="stars"></canvas>
+    <h1 id="title" class="text-3xl sm:text-4xl font-bold mb-8"></h1>
     <div id="errorMessage" class="text-sm sm:text-base">
         <span id="errorText"></span>
         <button onclick="document.getElementById('errorMessage').style.display = 'none'" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700">✕</button>
     </div>
     <div id="loadingSpinner" class="mb-6"></div>
-    <div id="buttonContainer" class="w-full grid gap-4 sm:grid-cols-2 max-w-5xl"></div>
+    <div id="buttonContainer" class="container w-full grid gap-6 sm:grid-cols-2 max-w-5xl"></div>
 
     <script>
         // Google Sheet 連結: https://docs.google.com/spreadsheets/d/1P28ZlLqSFk64xTX9bVg2sSCOSj1kCp7blzBvIWfgT_w/edit?gid=0#gid=0
@@ -125,36 +136,44 @@
         const sheetName = 'Sheet1'; // 請確認工作表名稱，若不同請修改
         const apiUrl = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?tqx=out:json&tq=SELECT%20*%20WHERE%20A%20IS%20NOT%20NULL&sheet=${encodeURIComponent(sheetName)}`;
 
-        // 粒子背景
-        const canvas = document.getElementById('particles');
+        // 星雲背景
+        const canvas = document.getElementById('stars');
         const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
-        const particles = [];
-        for (let i = 0; i < 50; i++) {
-            particles.push({
+        const stars = [];
+        for (let i = 0; i < 100; i++) {
+            stars.push({
                 x: Math.random() * canvas.width,
                 y: Math.random() * canvas.height,
-                radius: Math.random() * 2 + 1,
-                vx: Math.random() * 0.5 - 0.25,
-                vy: Math.random() * 0.5 - 0.25
+                radius: Math.random() * 1.5 + 0.5,
+                opacity: Math.random() * 0.5 + 0.3,
+                twinkleSpeed: Math.random() * 0.02 + 0.01
             });
         }
-        function animateParticles() {
+        function animateStars() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particles.forEach(p => {
-                p.x += p.vx;
-                p.y += p.vy;
-                if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
-                if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+            stars.forEach(s => {
+                s.opacity += Math.sin(Date.now() * s.twinkleSpeed) * 0.02;
                 ctx.beginPath();
-                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+                ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255, 255, 255, ${s.opacity})`;
                 ctx.fill();
             });
-            requestAnimationFrame(animateParticles);
+            requestAnimationFrame(animateStars);
         }
-        animateParticles();
+        animateStars();
+
+        // 標題逐字淡入
+        const titleText = 'All link';
+        const titleElement = document.getElementById('title');
+        titleText.split('').forEach((char, i) => {
+            const span = document.createElement('span');
+            span.className = 'title-letter';
+            span.style.animationDelay = `${i * 0.1}s`;
+            span.textContent = char === ' ' ? '\u00A0' : char;
+            titleElement.appendChild(span);
+        });
 
         async function fetchSheetData() {
             const spinner = document.getElementById('loadingSpinner');
@@ -211,46 +230,52 @@
             })));
 
             // 從第二行（A2 開始）處理資料
-            rows.slice(1).forEach(row => {
+            rows.slice(1).forEach((row, rowIndex) => {
                 const label = row.c[0]?.v; // A 欄：名稱
                 if (label) { // 確保名稱存在
-                    const card = document.createElement('div');
-                    card.className = 'card';
-                    const cardInner = document.createElement('div');
-                    cardInner.className = 'card-inner';
+                    const planetContainer = document.createElement('div');
+                    planetContainer.className = 'relative flex justify-center items-center my-10';
 
-                    // 卡片正面（顯示名稱）
-                    const cardFront = document.createElement('div');
-                    cardFront.className = 'card-front';
-                    cardFront.innerHTML = `<span class="text-lg sm:text-xl font-bold text-white">${label}</span>`;
+                    // 星球
+                    const planet = document.createElement('div');
+                    planet.className = 'planet';
+                    planet.style.animationDelay = `${rowIndex * 2}s`;
+                    planet.innerHTML = `<span class="planet-label">${label}</span>`;
 
-                    // 卡片背面（顯示按鈕）
-                    const cardBack = document.createElement('div');
-                    cardBack.className = 'card-back';
+                    // 衛星（按鈕）
+                    const satellites = document.createElement('div');
+                    satellites.className = 'satellites';
+                    satellites.id = `satellites-${rowIndex}`;
 
-                    // 生成六邊形按鈕
+                    // 生成衛星按鈕
                     activeButtons.forEach(button => {
                         const link = row.c[button.index]?.v;
-                        const buttonElement = document.createElement('a');
-                        buttonElement.className = `hex-button flex items-center justify-center text-white text-xs sm:text-sm ${link ? button.color : 'bg-gray-300 cursor-not-allowed'}`;
-                        buttonElement.innerHTML = `
+                        const satellite = document.createElement('a');
+                        satellite.className = `satellite flex items-center justify-center text-white text-xs sm:text-sm ${link ? button.color : 'bg-gray-300 cursor-not-allowed'}`;
+                        satellite.innerHTML = `
                             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${button.icon}" />
                             </svg>
                             ${button.name}
                         `;
                         if (link && typeof link === 'string') { // 檢查 link 是否為有效字串
-                            buttonElement.href = link.startsWith('http') ? link : `https://${link}`;
-                            buttonElement.target = '_blank';
-                            buttonElement.rel = 'noopener noreferrer';
+                            satellite.href = link.startsWith('http') ? link : `https://${link}`;
+                            satellite.target = '_blank';
+                            satellite.rel = 'noopener noreferrer';
                         }
-                        cardBack.appendChild(buttonElement);
+                        satellites.appendChild(satellite);
                     });
 
-                    cardInner.appendChild(cardFront);
-                    cardInner.appendChild(cardBack);
-                    card.appendChild(cardInner);
-                    container.appendChild(card);
+                    // 點擊星球切換衛星顯示
+                    planet.addEventListener('click', () => {
+                        const isOpen = satellites.classList.contains('open');
+                        document.querySelectorAll('.satellites.open').forEach(s => s.classList.remove('open'));
+                        if (!isOpen) satellites.classList.add('open');
+                    });
+
+                    planetContainer.appendChild(planet);
+                    planetContainer.appendChild(satellites);
+                    container.appendChild(planetContainer);
                 }
             });
         }
