@@ -1,0 +1,424 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>鰂魚涌跆拳道班報名表</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+            color: #1f2937;
+        }
+        #errorMessage {
+            color: #b91c1c;
+            display: none;
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: #fee2e2;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+        #successMessage {
+            color: #15803d;
+            display: none;
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: #dcfce7;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+        #loadingSpinner {
+            display: none;
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 50%;
+            background: radial-gradient(circle, #3b82f6 10%, transparent 10.01%);
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.2); opacity: 1; }
+        }
+        .form-container {
+            background: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .form-container:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+        }
+        .action-button {
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .action-button:hover:not(.cursor-not-allowed)::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.5), transparent 70%);
+            opacity: 1;
+            transition: opacity 0.3s ease;
+        }
+        .action-button:active {
+            transform: scale(0.95);
+        }
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.5s ease forwards;
+        }
+        @keyframes fadeIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+        canvas#lights {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.2;
+        }
+        .input-field {
+            transition: box-shadow 0.3s ease;
+        }
+        .input-field:focus-within {
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+        }
+        .class-button {
+            transition: all 0.2s ease;
+        }
+        .class-button.selected {
+            background-color: #3b82f6 !important;
+            color: white !important;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+        }
+        .date-checkbox {
+            transition: all 0.2s ease;
+        }
+        .date-checkbox:checked + .date-label {
+            background-color: #3b82f6;
+            color: white;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+        }
+        .counter-button:disabled {
+            background-color: #e5e7eb;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center min-h-screen p-4">
+    <canvas id="lights"></canvas>
+    <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4 fade-in">鰂魚涌跆拳道班報名表</h1>
+    <div id="errorMessage" class="text-sm sm:text-base">
+        <span id="errorText"></span>
+        <button onclick="document.getElementById('errorMessage').style.display = 'none'" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700">✕</button>
+    </div>
+    <div id="successMessage" class="text-sm sm:text-base">
+        <span id="successText">提交成功！</span>
+        <button onclick="document.getElementById('successMessage').style.display = 'none'" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700">✕</button>
+    </div>
+    <div id="loadingSpinner" class="mb-6"></div>
+    <div class="form-container w-full max-w-lg p-6 fade-in">
+        <div class="space-y-4">
+            <div>
+                <label for="name" class="block text-sm font-medium text-gray-700">學員姓名 *</label>
+                <input id="name" type="text" class="input-field mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" required>
+            </div>
+            <div>
+                <label for="phone" class="block text-sm font-medium text-gray-700">聯絡電話 *</label>
+                <input id="phone" type="tel" class="input-field mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" required>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700">所選班別 *</label>
+                <div class="flex space-x-4 mt-2">
+                    <button type="button" class="class-button action-button py-2 px-4 rounded-lg text-sm text-gray-700 bg-gray-200 hover:bg-gray-300" data-class="junior">初級 3-7歲 白帶至綠帶</button>
+                    <button type="button" class="class-button action-button py-2 px-4 rounded-lg text-sm text-gray-700 bg-gray-200 hover:bg-gray-300" data-class="advanced">進階 8歲或以上 綠帶或以上</button>
+                </div>
+                <input type="hidden" id="class" required>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700">請選擇日期 *</label>
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-sm text-gray-600">至少選擇一個日期</span>
+                    <button type="button" id="selectAll" class="action-button py-1 px-3 rounded-lg text-sm text-white bg-blue-500 hover:bg-blue-600">全選</button>
+                </div>
+                <div id="dateContainer" class="grid gap-2"></div>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700">上期有否請假 *</label>
+                <div class="mt-2 space-x-4">
+                    <label class="inline-flex items-center">
+                        <input type="radio" name="leave" value="yes" class="form-radio text-blue-600" required>
+                        <span class="ml-2 text-sm text-gray-700">有</span>
+                    </label>
+                    <label class="inline-flex items-center">
+                        <input type="radio" name="leave" value="no" class="form-radio text-blue-600" required>
+                        <span class="ml-2 text-sm text-gray-700">沒有</span>
+                    </label>
+                </div>
+            </div>
+            <div>
+                <label for="leaveDate" class="block text-sm font-medium text-gray-700">請假日期（如有）</label>
+                <input id="leaveDate" type="text" class="input-field mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" disabled>
+            </div>
+            <div>
+                <label for="deduction" class="block text-sm font-medium text-gray-700">上期扣減 (堂) *</label>
+                <div class="flex items-center space-x-2 mt-1">
+                    <button type="button" id="decreaseDeduction" class="counter-button action-button py-2 px-4 rounded-lg text-sm text-gray-700 bg-gray-200 hover:bg-gray-300 disabled:bg-gray-100" disabled>-</button>
+                    <input id="deduction" type="number" min="0" max="15" value="0" class="input-field w-20 text-center rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" required readonly>
+                    <button type="button" id="increaseDeduction" class="counter-button action-button py-2 px-4 rounded-lg text-sm text-gray-700 bg-gray-200 hover:bg-gray-300">+</button>
+                </div>
+            </div>
+            <div>
+                <button id="submitButton" type="button" class="action-button w-full py-2 px-4 rounded-lg text-center text-white text-sm bg-blue-500 hover:bg-blue-600">提交</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Google Sheet 連結: https://docs.google.com/spreadsheets/d/1IGczhrahIZF2W6_RUUU9ib5vQ1vkLVDIQEObWxEStgU/edit?gid=550660241#gid=550660241
+        const spreadsheetId = '1IGczhrahIZF2W6_RUUU9ib5vQ1vkLVDIQEObWxEStgU';
+        const sheetName = 'QB';
+        const apiUrl = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?tqx=out:json&tq=SELECT%20G%20WHERE%20G%20IS%20NOT%20NULL%20OFFSET%201&sheet=${encodeURIComponent(sheetName)}`;
+
+        // 漂浮光點
+        const canvas = document.getElementById('lights');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        const lights = [];
+        for (let i = 0; i < 50; i++) {
+            lights.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                radius: Math.random() * 1.5 + 0.5,
+                vx: Math.random() * 0.2 - 0.1,
+                vy: Math.random() * 0.2 - 0.1
+            });
+        }
+        function animateLights() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            lights.forEach(l => {
+                l.x += l.vx;
+                l.y += l.vy;
+                if (l.x < 0 || l.x > canvas.width) l.vx *= -1;
+                if (l.y < 0 || l.y > canvas.height) l.vy *= -1;
+                ctx.beginPath();
+                ctx.arc(l.x, l.y, l.radius, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+                ctx.fill();
+            });
+            requestAnimationFrame(animateLights);
+        }
+        animateLights();
+
+        // 轉義函數
+        function escapeHtml(str) {
+            if (!str) return '';
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        // 從 Google Sheet 獲取日期
+        async function fetchSheetData() {
+            const spinner = document.getElementById('loadingSpinner');
+            spinner.style.display = 'block';
+            try {
+                const response = await fetch(apiUrl);
+                if (!response.ok) {
+                    throw new Error(`無法連接到 Google Sheets，HTTP 狀態碼：${response.status}`);
+                }
+                const text = await response.text();
+                const jsonString = text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\);/);
+                if (!jsonString || !jsonString[1]) {
+                    throw new Error('無效的 Google Sheets JSONP 回應，請檢查工作表是否公開。');
+                }
+                const data = JSON.parse(jsonString[1]);
+                const dateContainer = document.getElementById('dateContainer');
+                if (data.table && data.table.rows && data.table.rows.length > 0) {
+                    data.table.rows.forEach((row, index) => {
+                        const date = row.c[0]?.v;
+                        if (date) {
+                            const div = document.createElement('div');
+                            div.className = 'flex items-center space-x-2';
+                            div.innerHTML = `
+                                <input type="checkbox" id="date-${index}" name="dates" value="${escapeHtml(date)}" class="date-checkbox form-checkbox text-blue-600">
+                                <label for="date-${index}" class="date-label py-2 px-4 rounded-lg text-sm text-gray-700 bg-gray-200 hover:bg-gray-300">${escapeHtml(date)}</label>
+                            `;
+                            dateContainer.appendChild(div);
+                        }
+                    });
+                    document.getElementById('errorMessage').style.display = 'none';
+                } else {
+                    showError('工作表中無有效日期資料，請確保 G 欄從第 2 行開始有資料，並檢查工作表名稱是否為 "' + sheetName + '"。');
+                }
+            } catch (error) {
+                showError(`載入日期資料失敗：${error.message}。請確保 Google Sheet 已設為公開，且工作表名稱正確。`);
+                console.error('Fetch error:', error);
+            } finally {
+                spinner.style.display = 'none';
+            }
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            document.getElementById('errorText').textContent = message;
+            errorDiv.style.display = 'block';
+        }
+
+        // 班別選擇邏輯
+        const classButtons = document.querySelectorAll('.class-button');
+        classButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                classButtons.forEach(btn => btn.classList.remove('selected'));
+                button.classList.add('selected');
+                document.getElementById('class').value = button.dataset.class;
+            });
+        });
+
+        // 全選日期邏輯
+        const selectAllButton = document.getElementById('selectAll');
+        selectAllButton.addEventListener('click', () => {
+            const dateCheckboxes = document.querySelectorAll('input[name="dates"]');
+            const allChecked = Array.from(dateCheckboxes).every(cb => cb.checked);
+            dateCheckboxes.forEach(cb => cb.checked = !allChecked);
+            selectAllButton.textContent = allChecked ? '全選' : '取消全選';
+        });
+
+        // 請假單選按鈕邏輯
+        const leaveRadios = document.querySelectorAll('input[name="leave"]');
+        const leaveDateInput = document.getElementById('leaveDate');
+        leaveRadios.forEach(radio => {
+            radio.addEventListener('change', () => {
+                leaveDateInput.disabled = radio.value === 'no';
+                if (radio.value === 'no') {
+                    leaveDateInput.value = '';
+                }
+            });
+        });
+
+        // 扣減計數器邏輯
+        const deductionInput = document.getElementById('deduction');
+        const decreaseButton = document.getElementById('decreaseDeduction');
+        const increaseButton = document.getElementById('increaseDeduction');
+
+        function updateDeductionButtons() {
+            const value = parseInt(deductionInput.value) || 0;
+            decreaseButton.disabled = value <= 0;
+            increaseButton.disabled = value >= 15;
+        }
+
+        decreaseButton.addEventListener('click', () => {
+            let value = parseInt(deductionInput.value) || 0;
+            if (value > 0) {
+                deductionInput.value = value - 1;
+                updateDeductionButtons();
+            }
+        });
+
+        increaseButton.addEventListener('click', () => {
+            let value = parseInt(deductionInput.value) || 0;
+            if (value < 15) {
+                deductionInput.value = value + 1;
+                updateDeductionButtons();
+            }
+        });
+
+        // 表單提交邏輯
+        document.getElementById('submitButton').addEventListener('click', () => {
+            const name = document.getElementById('name').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const classSelected = document.getElementById('class').value;
+            const selectedDates = Array.from(document.querySelectorAll('input[name="dates"]:checked')).map(cb => cb.value);
+            const leave = document.querySelector('input[name="leave"]:checked')?.value;
+            const leaveDate = document.getElementById('leaveDate').value.trim();
+            const deduction = document.getElementById('deduction').value;
+
+            if (!name || !phone || !classSelected || selectedDates.length === 0 || !leave || !deduction) {
+                showError('請填寫所有必填字段，並至少選擇一個日期！');
+                return;
+            }
+
+            if (leave === 'yes' && !leaveDate) {
+                showError('請輸入請假日期！');
+                return;
+            }
+
+            // 模擬提交成功（未連接到後端）
+            document.getElementById('successMessage').style.display = 'block';
+            setTimeout(() => {
+                document.getElementById('successMessage').style.display = 'none';
+            }, 3000);
+
+            // 清空表單
+            document.getElementById('name').value = '';
+            document.getElementById('phone').value = '';
+            document.getElementById('class').value = '';
+            document.querySelectorAll('input[name="dates"]').forEach(cb => cb.checked = false);
+            selectAllButton.textContent = '全選';
+            leaveRadios.forEach(radio => radio.checked = false);
+            leaveDateInput.value = '';
+            leaveDateInput.disabled = true;
+            deductionInput.value = '0';
+            updateDeductionButtons();
+            classButtons.forEach(btn => btn.classList.remove('selected'));
+        });
+
+        // 初次載入日期資料
+        fetchSheetData();
+    </script>
+</body>
+</html>
