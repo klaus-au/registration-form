@@ -47,13 +47,13 @@
             0%, 100% { transform: scale(1); opacity: 0.8; }
             50% { transform: scale(1.2); opacity: 1; }
         }
-        .form-container {
+        .form-container, .confirmation-container {
             background: white;
             border-radius: 0.5rem;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-        .form-container:hover {
+        .form-container:hover, .confirmation-container:hover {
             transform: translateY(-4px);
             box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
         }
@@ -115,10 +115,16 @@
         }
         .counter-button {
             touch-action: none; /* 禁用手機觸摸縮放 */
+            min-width: 2.5rem; /* 確保按鈕寬度 */
         }
         .counter-button:disabled {
             background-color: #e5e7eb;
             cursor: not-allowed;
+        }
+        .terms-checkbox:checked + .terms-label {
+            background-color: #3b82f6;
+            color: white;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
         }
     </style>
 </head>
@@ -134,7 +140,7 @@
         <button onclick="document.getElementById('successMessage').style.display = 'none'" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700">✕</button>
     </div>
     <div id="loadingSpinner" class="mb-6"></div>
-    <div class="form-container w-full max-w-lg p-6 fade-in">
+    <div id="formContainer" class="form-container w-full max-w-lg p-6 fade-in">
         <div class="space-y-4">
             <div>
                 <label for="name" class="block text-sm font-medium text-gray-700">學員姓名 *</label>
@@ -179,16 +185,35 @@
             </div>
             <div>
                 <label for="deduction" class="block text-sm font-medium text-gray-700">上期扣減 (堂) *</label>
-                <div class="flex items-center space-x-2 mt-1">
+                <div class="flex items-center space-x-4 mt-1">
                     <button type="button" id="decreaseDeduction" class="counter-button action-button py-2 px-4 rounded-lg text-sm text-gray-700 bg-gray-200 hover:bg-gray-300 disabled:bg-gray-100" disabled>-</button>
                     <input id="deduction" type="number" min="0" max="15" value="0" class="input-field w-20 text-center rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" required readonly>
                     <button type="button" id="increaseDeduction" class="counter-button action-button py-2 px-4 rounded-lg text-sm text-gray-700 bg-gray-200 hover:bg-gray-300">+</button>
                 </div>
             </div>
             <div>
+                <div class="mt-2">
+                    <p class="text-sm text-gray-600 mb-2">請閱讀以下條款並同意：</p>
+                    <ol class="list-decimal list-inside text-sm text-gray-700 mb-4">
+                        <li class="mb-1">課程名額有限，若報名人數過多，教練將根據報名或學員水平進行篩選。</li>
+                        <li class="mb-1">課程內容可能因學員水平作出調整。</li>
+                        <li class="mb-1">若天文台懸掛八號或以上颱風或黑色暴雨警告，當天課程將取消。紅雨或黃雨則課程照常進行。教練會透過WhatsApp通知進一步安排。</li>
+                        <li class="mb-1">為確保安全，參加者必須遵守教練指示。違反守則者，教練保留權利要求其立即退出課程，所繳費用不予退還。參加者亦需確認自身健康狀況適合參與。</li>
+                    </ol>
+                    <div class="flex items-center space-x-2">
+                        <input type="checkbox" id="terms" name="terms" class="terms-checkbox form-checkbox text-blue-600" required>
+                        <label for="terms" class="terms-label py-2 px-4 rounded-lg text-sm text-gray-700 bg-gray-200 hover:bg-gray-300">我已閱讀並同意上述條款</label>
+                    </div>
+                </div>
+            </div>
+            <div>
                 <button id="submitButton" type="button" class="action-button w-full py-2 px-4 rounded-lg text-center text-white text-sm bg-blue-500 hover:bg-blue-600">提交</button>
             </div>
         </div>
+    </div>
+    <div id="confirmationPage" class="confirmation-container w-full max-w-lg p-6 hidden fade-in">
+        <p class="text-lg text-gray-700 mb-4">感謝您的回覆！<br>已經收到您的報名，稍後會收到確認課堂訊息，確認後再付款。</p>
+        <button id="returnButton" type="button" class="action-button w-full py-2 px-4 rounded-lg text-center text-white text-sm bg-blue-500 hover:bg-blue-600">返回</button>
     </div>
 
     <script>
@@ -355,7 +380,11 @@
             }
         }, 200));
 
-        // 表單提交邏輯
+        // 表單提交與確認頁邏輯
+        const formContainer = document.getElementById('formContainer');
+        const confirmationPage = document.getElementById('confirmationPage');
+        const returnButton = document.getElementById('returnButton');
+
         document.getElementById('submitButton').addEventListener('click', () => {
             const name = document.getElementById('name').value.trim();
             const phone = document.getElementById('phone').value.trim();
@@ -364,9 +393,10 @@
             const leave = document.querySelector('input[name="leave"]:checked')?.value;
             const leaveDate = document.getElementById('leaveDate').value.trim();
             const deduction = document.getElementById('deduction').value;
+            const terms = document.getElementById('terms').checked;
 
-            if (!name || !phone || !classSelected || selectedDates.length === 0 || !leave || !deduction) {
-                showError('請填寫所有必填字段，並至少選擇一個日期！');
+            if (!name || !phone || !classSelected || selectedDates.length === 0 || !leave || !deduction || !terms) {
+                showError('請填寫所有必填字段，選擇至少一個日期，並同意條款！');
                 return;
             }
 
@@ -375,12 +405,13 @@
                 return;
             }
 
-            // 模擬提交成功（未連接到後端）
-            document.getElementById('successMessage').style.display = 'block';
-            setTimeout(() => {
-                document.getElementById('successMessage').style.display = 'none';
-            }, 3000);
+            // 顯示確認頁
+            formContainer.classList.add('hidden');
+            confirmationPage.classList.remove('hidden');
+        });
 
+        // 返回按鈕邏輯
+        returnButton.addEventListener('click', () => {
             // 清空表單
             document.getElementById('name').value = '';
             document.getElementById('phone').value = '';
@@ -393,6 +424,11 @@
             deductionInput.value = '0';
             updateDeductionButtons();
             classButtons.forEach(btn => btn.classList.remove('selected'));
+            document.getElementById('terms').checked = false;
+
+            // 切換回表單
+            confirmationPage.classList.add('hidden');
+            formContainer.classList.remove('hidden');
         });
 
         // 初次載入日期資料
