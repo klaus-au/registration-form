@@ -4,179 +4,225 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>鰂魚涌跆拳道班報名表</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        body {
+            font-family: 'Noto Sans TC', Arial, sans-serif;
+            max-width: 960px;
+            margin: 40px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #E0F2FE 0%, #F3F4F6 100%);
+            color: #1F2937;
+        }
+        .form-container {
+            background: white;
+            padding: 48px;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
         .error { border-color: #ef4444; }
         .error-message { color: #ef4444; font-size: 0.875rem; margin-top: 0.25rem; }
         .course-row:hover { background-color: #f3f4f6; transition: background-color 0.2s; }
         .btn { transition: transform 0.2s, background-color: 0.2s; }
         .btn:hover { transform: scale(1.05); }
-        @media (max-width: 640px) {
+        .course-card {
+            border: 1px solid #D1D5DB;
+            border-radius: 10px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background-color: #F3F4F6;
+        }
+        .course-card:hover {
+            transform: scale(1.03);
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+        }
+        .course-card.selected {
+            border: 2px solid #3B82F6;
+            box-shadow: 0 0 8px rgba(59, 130, 246, 0.3);
+            background-color: #E0F2FE;
+        }
+        @media (max-width: 600px) {
+            body {
+                margin: 16px auto;
+                padding: 12px;
+            }
+            .form-container {
+                padding: 24px;
+            }
             h1 { font-size: 1.5rem; }
             .container { padding: 0.5rem; }
+            .course-card {
+                padding: 12px;
+            }
         }
     </style>
 </head>
-<body class="bg-gray-100 font-sans">
-    <div class="container mx-auto p-4 max-w-2xl">
-        <div id="form-section" class="bg-white p-6 rounded-lg shadow-md">
-            <h1 class="text-2xl font-bold text-center text-gray-800">鰂魚涌跆拳道班報名表</h1>
-            <div class="text-left text-gray-600 mt-4">
-                <p>家長你好！</p>
-                <p class="mt-2">🥋 <span class="font-bold">鰂魚涌跆拳道班報名表</span> 🥋</p>
-                <p class="mt-4"><span class="font-bold">課程詳情</span></p>
-                <p>📅 <span class="font-bold">逢星期日上課</span>，分為以下兩個時段：</p>
-                <ul class="list-none mt-2">
-                    <li class="ml-4"><span class="font-bold">初級班</span> (3-7歲，白帶至綠帶)</li>
-                    <li class="ml-4">⏰ 12:00pm - 1:00pm</li>
-                    <li class="ml-4 mt-2"><span class="font-bold">進階班</span> (8歲或以上，綠帶或以上)</li>
-                    <li class="ml-4">⏰ 12:30pm - 2:00pm</li>
+<body>
+    <div class="form-container">
+        <h1 class="text-3xl font-bold text-center text-gray-800">鰂魚涌跆拳道班報名表</h1>
+        <div class="text-left text-gray-600 mt-4">
+            <p>家長你好！</p>
+            <p class="mt-2">🥋 <span class="font-bold">鰂魚涌跆拳道班報名表</span> 🥋</p>
+            <p class="mt-4"><span class="font-bold">課程詳情</span></p>
+            <p>📅 <span class="font-bold">逢星期日上課</span>，分為以下兩個時段：</p>
+            <ul class="list-none mt-2">
+                <li class="ml-4"><span class="font-bold">初級班</span> (3-7歲，白帶至綠帶)</li>
+                <li class="ml-4">⏰ 12:00pm - 1:00pm</li>
+                <li class="ml-4 mt-2"><span class="font-bold">進階班</span> (8歲或以上，綠帶或以上)</li>
+                <li class="ml-4">⏰ 12:30pm - 2:00pm</li>
+            </ul>
+            <p class="mt-4">💰 <span class="font-bold">費用</span>：每節課堂 <span class="font-bold">$110</span></p>
+            <p><span class="font-bold">收費方式</span></p>
+            <p>分為 <span class="font-bold">4期</span> 收費：</p>
+            <ul class="list-none mt-2">
+                <li class="ml-4">📆 1月 - 3月</li>
+                <li class="ml-4">📆 4月 - 6月</li>
+                <li class="ml-4">📆 7月 - 9月</li>
+                <li class="ml-4">📆 10月 - 12月</li>
+            </ul>
+            <p class="mt-4"><span class="font-bold">付款方式</span> 💵</p>
+            <ol class="list-decimal ml-4 mt-2">
+                <li><span class="font-bold">FPS</span></li>
+                <ul class="list-none ml-4">
+                    <li>戶口編號：<span class="font-bold">163115645</span></li>
+                    <li>名稱：<span class="font-bold">Practical Club Consultants Company Limited</span></li>
+                    <li>付款訊息：請寫上小朋友全名</li>
+                    <li>完成後請截圖並 WhatsApp 教練確認 ✅</li>
                 </ul>
-                <p class="mt-4">💰 <span class="font-bold">費用</span>：每節課堂 <span class="font-bold">$110</span></p>
-                <p><span class="font-bold">收費方式</span></p>
-                <p>分為 <span class="font-bold">4期</span> 收費：</p>
-                <ul class="list-none mt-2">
-                    <li class="ml-4">📆 1月 - 3月</li>
-                    <li class="ml-4">📆 4月 - 6月</li>
-                    <li class="ml-4">📆 7月 - 9月</li>
-                    <li class="ml-4">📆 10月 - 12月</li>
+                <li class="mt-2"><span class="font-bold">支票</span></li>
+                <ul class="list-none ml-4">
+                    <li>抬頭：<span class="font-bold">香港實用跆拳道協會</span></li>
                 </ul>
-                <p class="mt-4"><span class="font-bold">付款方式</span> 💵</p>
-                <ol class="list-decimal ml-4 mt-2">
-                    <li><span class="font-bold">FPS</span></li>
-                    <ul class="list-none ml-4">
-                        <li>戶口編號：<span class="font-bold">163115645</span></li>
-                        <li>名稱：<span class="font-bold">Practical Club Consultants Company Limited</span></li>
-                        <li>付款訊息：請寫上小朋友全名</li>
-                        <li>完成後請截圖並 WhatsApp 教練確認 ✅</li>
-                    </ul>
-                    <li class="mt-2"><span class="font-bold">支票</span></li>
-                    <ul class="list-none ml-4">
-                        <li>抬頭：<span class="font-bold">香港實用跆拳道協會</span></li>
-                    </ul>
-                    <li class="mt-2"><span class="font-bold">現金</span></li>
-                    <ul class="list-none ml-4">
-                        <li>於第一堂課或之前交給教練</li>
-                    </ul>
-                </ol>
-                <p class="mt-4">📞 如有任何查詢，歡迎聯繫 歐Sir！</p>
-                <p>📱 WhatsApp: <a href="https://wa.me/85261504221?text=你好！想查詢鰂魚涌跆拳道班！" target="_blank" class="text-blue-600 hover:underline">61504221</a></p>
+                <li class="mt-2"><span class="font-bold">現金</span></li>
+                <ul class="list-none ml-4">
+                    <li>於第一堂課或之前交給教練</li>
+                </ul>
+            </ol>
+            <p class="mt-4">📞 如有任何查詢，歡迎聯繫 歐Sir！</p>
+            <p>📱 WhatsApp: <a href="https://wa.me/85261504221?text=你好！想查詢鰂魚涌跆拳道班！" target="_blank" class="text-blue-600 hover:underline">61504221</a></p>
+        </div>
+        <div id="loadingSpinner" class="w-10 h-10 mx-auto my-4 border-4 border-t-transparent border-blue-600 rounded-full animate-spin hidden"></div>
+        <div class="space-y-6 mt-6">
+            <div>
+                <label for="name" class="block text-gray-700 font-semibold">學員姓名 *</label>
+                <input id="name" type="text" class="w-full p-2 mt-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                <p id="name-error" class="error-message hidden">請輸入學員姓名！</p>
             </div>
-            <div id="loadingSpinner" class="w-10 h-10 mx-auto my-4 border-4 border-t-transparent border-blue-600 rounded-full animate-spin hidden"></div>
-            <div class="space-y-6 mt-6">
-                <div>
-                    <label for="name" class="block text-gray-700 font-semibold">學員姓名 *</label>
-                    <input id="name" type="text" class="w-full p-2 mt-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-                    <p id="name-error" class="error-message hidden">請輸入學員姓名！</p>
-                </div>
-                <div>
-                    <label for="phone" class="block text-gray-700 font-semibold">聯絡電話 *</label>
-                    <input id="phone" type="tel" class="w-full p-2 mt-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-                    <p id="phone-error" class="error-message hidden">請輸入有效的8位電話號碼！</p>
-                </div>
-                <div>
-                    <label class="block text-gray-700 font-semibold">所選班別 *</label>
-                    <div class="space-y-4 mt-2">
-                        <button type="button" class="class-button btn py-2 px-4 rounded-md text-sm text-white bg-gray-500 hover:bg-gray-600 w-full" data-class="junior">初級 3-7歲 白帶至綠帶</button>
-                        <button type="button" class="class-button btn py-2 px-4 rounded-md text-sm text-white bg-gray-500 hover:bg-gray-600 w-full" data-class="advanced">進階 8歲或以上 綠帶或以上</button>
+            <div>
+                <label for="phone" class="block text-gray-700 font-semibold">聯絡電話 *</label>
+                <input id="phone" type="tel" class="w-full p-2 mt-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                <p id="phone-error" class="error-message hidden">請輸入有效的8位電話號碼！</p>
+            </div>
+            <div>
+                <label class="block text-gray-700 font-semibold">所選班別 *</label>
+                <div class="grid grid-cols-1 gap-4 mt-4">
+                    <div class="course-card" data-value="junior" onclick="selectClass(this)">
+                        <h3 class="text-lg font-semibold">初級班</h3>
+                        <p class="text-gray-600">3-7歲，白帶至綠帶，12:00pm-1:00pm</p>
                     </div>
-                    <p id="class-error" class="error-message hidden">請選擇班別！</p>
-                    <input type="hidden" id="class" required>
-                </div>
-                <div>
-                    <label class="block text-gray-700 font-semibold">請選擇日期 *</label>
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="text-sm text-gray-600">至少選擇一個日期</span>
-                        <button type="button" id="selectAll" class="btn py-1 px-3 rounded-md text-sm text-white bg-blue-600 hover:bg-blue-700">全選</button>
-                    </div>
-                    <table class="w-full mt-2 border-collapse">
-                        <thead>
-                            <tr class="bg-gray-200">
-                                <th class="p-2 text-left">日期</th>
-                                <th class="p-2 text-center">選擇</th>
-                            </tr>
-                        </thead>
-                        <tbody id="dateContainer" class="text-gray-700"></tbody>
-                    </table>
-                    <p id="date-selection-error" class="error-message hidden">請選擇至少一個日期！</p>
-                </div>
-                <div>
-                    <label class="block text-gray-700 font-semibold">上期有否請假 *</label>
-                    <div class="mt-2 space-x-4">
-                        <label class="inline-flex items-center">
-                            <input type="radio" name="leave" value="yes" class="form-radio text-blue-600" required>
-                            <span class="ml-2 text-sm text-gray-700">有</span>
-                        </label>
-                        <label class="inline-flex items-center">
-                            <input type="radio" name="leave" value="no" class="form-radio text-blue-600" required>
-                            <span class="ml-2 text-sm text-gray-700">沒有</span>
-                        </label>
-                    </div>
-                    <p id="leave-error" class="error-message hidden">請選擇是否請假！</p>
-                </div>
-                <div>
-                    <label for="leaveDate" class="block text-gray-700 font-semibold">請假日期（如有）</label>
-                    <input id="leaveDate" type="text" placeholder="請輸入日期（如 28/2, 30/3, 16/4……）" class="w-full p-2 mt-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" disabled>
-                    <p id="leave-date-error" class="error-message hidden">請輸入請假日期！</p>
-                </div>
-                <div>
-                    <label for="deduction" class="block text-gray-700 font-semibold">上期扣減 (堂) *</label>
-                    <div class="flex items-center space-x-4 mt-1">
-                        <button type="button" id="decreaseDeduction" class="counter-button btn py-2 px-4 rounded-md text-sm text-white bg-gray-500 hover:bg-gray-600 disabled:bg-gray-300" disabled>-</button>
-                        <input id="deduction" type="number" min="0" max="15" value="0" class="w-20 text-center p-2 mt-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required readonly>
-                        <button type="button" id="increaseDeduction" class="counter-button btn py-2 px-4 rounded-md text-sm text-white bg-gray-500 hover:bg-gray-600">+</button>
+                    <div class="course-card" data-value="advanced" onclick="selectClass(this)">
+                        <h3 class="text-lg font-semibold">進階班</h3>
+                        <p class="text-gray-600">8歲或以上，綠帶或以上，12:30pm-2:00pm</p>
                     </div>
                 </div>
-                <div>
-                    <h3 class="text-lg font-semibold text-gray-700">同意條款</h3>
-                    <div class="mt-4">
-                        <p class="text-gray-600">請閱讀以下條款並同意：</p>
-                        <ol class="list-decimal text-gray-600 ml-4">
-                            <li class="mt-2">課程名額有限，若報名人數過多，教練將根據報名或學員水平進行篩選。</li>
-                            <li class="mt-2">課程內容可能因學員水平作出調整。</li>
-                            <li class="mt-2">若天文台懸掛八號或以上颱風或黑色暴雨警告，當天課程將取消。紅雨或黃雨則課程照常進行。教練會透過WhatsApp通知進一步安排。</li>
-                            <li class="mt-2">為確保安全，參加者必須遵守教練指示。違反守則者，教練保留權利要求其立即退出課程，所繳費用不予退還。參加者亦需確認自身健康狀況適合參與。</li>
-                            <li class="mt-2">若學員需請假，請提前通過WhatsApp通知教練，經確認後可於下一期學費中扣減相關費用。</li>
-                        </ol>
-                        <div class="mt-2 flex items-center">
-                            <input type="checkbox" id="terms" name="terms" class="form-checkbox mr-2 text-blue-600" required>
-                            <label for="terms" class="text-gray-700">我已閱讀並同意上述條款</label>
-                        </div>
-                        <p id="terms-error" class="error-message hidden">請同意條款！</p>
+                <p id="class-error" class="error-message hidden">請選擇班別！</p>
+                <input type="hidden" id="class" required>
+            </div>
+            <div>
+                <label class="block text-gray-700 font-semibold">請選擇日期 *</label>
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-sm text-gray-600">至少選擇一個日期</span>
+                    <button type="button" id="selectAll" class="btn py-1 px-3 rounded-md text-sm text-white bg-blue-600 hover:bg-blue-700">全選</button>
+                </div>
+                <table class="w-full mt-2 border-collapse">
+                    <thead>
+                        <tr class="bg-gray-200">
+                            <th class="p-2 text-left">日期</th>
+                            <th class="p-2 text-center">選擇</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dateContainer" class="text-gray-700"></tbody>
+                </table>
+                <p id="date-selection-error" class="error-message hidden">請選擇至少一個日期！</p>
+            </div>
+            <div>
+                <label class="block text-gray-700 font-semibold">上期有否請假 *</label>
+                <div class="mt-2 space-x-4">
+                    <label class="inline-flex items-center">
+                        <input type="radio" name="leave" value="yes" class="form-radio text-blue-600" required>
+                        <span class="ml-2 text-sm text-gray-700">有</span>
+                    </label>
+                    <label class="inline-flex items-center">
+                        <input type="radio" name="leave" value="no" class="form-radio text-blue-600" required>
+                        <span class="ml-2 text-sm text-gray-700">沒有</span>
+                    </label>
+                </div>
+                <p id="leave-error" class="error-message hidden">請選擇是否請假！</p>
+            </div>
+            <div>
+                <label for="leaveDate" class="block text-gray-700 font-semibold">請假日期（如有）</label>
+                <input id="leaveDate" type="text" placeholder="請輸入日期（如 28/2, 30/3, 16/4……）" class="w-full p-2 mt-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" disabled>
+                <p id="leave-date-error" class="error-message hidden">請輸入請假日期！</p>
+            </div>
+            <div>
+                <label for="deduction" class="block text-gray-700 font-semibold">上期扣減 (堂) *</label>
+                <div class="flex items-center space-x-4 mt-1">
+                    <button type="button" id="decreaseDeduction" class="counter-button btn py-2 px-4 rounded-md text-sm text-white bg-gray-500 hover:bg-gray-600 disabled:bg-gray-300" disabled>-</button>
+                    <input id="deduction" type="number" min="0" max="15" value="0" class="w-20 text-center p-2 mt-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required readonly>
+                    <button type="button" id="increaseDeduction" class="counter-button btn py-2 px-4 rounded-md text-sm text-white bg-gray-500 hover:bg-gray-600">+</button>
+                </div>
+            </div>
+            <div>
+                <h3 class="text-lg font-semibold text-gray-700">同意條款</h3>
+                <div class="mt-4">
+                    <p class="text-gray-600">請閱讀以下條款並同意：</p>
+                    <ol class="list-decimal text-gray-600 ml-4">
+                        <li class="mt-2">課程名額有限，若報名人數過多，教練將根據報名或學員水平進行篩選。</li>
+                        <li class="mt-2">課程內容可能因學員水平作出調整。</li>
+                        <li class="mt-2">若天文台懸掛八號或以上颱風或黑色暴雨警告，當天課程將取消。紅雨或黃雨則課程照常進行。教練會透過WhatsApp通知進一步安排。</li>
+                        <li class="mt-2">為確保安全，參加者必須遵守教練指示。違反守則者，教練保留權利要求其立即退出課程，所繳費用不予退還。參加者亦需確認自身健康狀況適合參與。</li>
+                        <li class="mt-2">若學員需請假，請提前通過WhatsApp通知教練，經確認後可於下一期學費中扣減相關費用。</li>
+                    </ol>
+                    <div class="mt-2 flex items-center">
+                        <input type="checkbox" id="terms" name="terms" class="form-checkbox mr-2 text-blue-600" required>
+                        <label for="terms" class="text-gray-700">我已閱讀並同意上述條款</label>
                     </div>
+                    <p id="terms-error" class="error-message hidden">請同意條款！</p>
                 </div>
-                <div class="flex justify-between items-center">
-                    <button onclick="clearForm()" class="btn bg-gray-500 text-white px-6 py-2 rounded-md hover:bg-gray-600">清除表單</button>
-                    <button id="submitButton" type="button" class="btn bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700">下一步</button>
-                </div>
+            </div>
+            <div class="flex justify-between items-center gap-4">
+                <button onclick="clearForm()" class="btn bg-gray-300 text-gray-700 px-6 py-3 rounded-md hover:bg-gray-400">清除表單</button>
+                <button id="submitButton" type="button" class="btn bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700">下一步</button>
             </div>
         </div>
-        <div id="confirm-section" class="bg-white p-6 rounded-lg shadow-md mt-4 hidden">
-            <h2 class="text-lg font-semibold text-center text-gray-700">請確認您的報名資料</h2>
-            <div class="text-gray-600 space-y-2 mt-4">
-                <p><strong>學員姓名：</strong><span id="confirm-name"></span></p>
-                <p><strong>聯絡電話：</strong><span id="confirm-phone"></span></p>
-                <p><strong>班別：</strong><span id="confirm-class"></span></p>
-                <p><strong>選擇日期：</strong></p>
-                <ul id="confirm-dates" class="list-disc text-gray-600 ml-6"></ul>
-                <p><strong>上期有否請假：</strong><span id="confirm-leave"></span></p>
-                <p><strong>請假日期（如有）：</strong><span id="confirm-leave-date"></span></p>
-                <p><strong>上期扣減 (堂)：</strong><span id="confirm-deduction"></span></p>
-                <p><strong>條款同意：</strong>已閱讀並同意所有條款</p>
-            </div>
-            <div class="flex justify-between mt-4">
-                <button onclick="returnToForm()" class="btn bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600">返回</button>
-                <button onclick="submitForm()" class="btn bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">提交</button>
-            </div>
+    </div>
+    <div id="confirm-section" class="form-container mt-4 hidden">
+        <h2 class="text-xl font-semibold text-center text-gray-700">請確認您的報名資料</h2>
+        <div class="text-gray-600 space-y-2 mt-4">
+            <p><strong>學員姓名：</strong><span id="confirm-name"></span></p>
+            <p><strong>聯絡電話：</strong><span id="confirm-phone"></span></p>
+            <p><strong>班別：</strong><span id="confirm-class"></span></p>
+            <p><strong>選擇日期：</strong></p>
+            <ul id="confirm-dates" class="list-disc text-gray-600 ml-6"></ul>
+            <p><strong>上期有否請假：</strong><span id="confirm-leave"></span></p>
+            <p><strong>請假日期（如有）：</strong><span id="confirm-leave-date"></span></p>
+            <p><strong>上期扣減 (堂)：</strong><span id="confirm-deduction"></span></p>
+            <p><strong>條款同意：</strong>已閱讀並同意所有條款</p>
         </div>
-        <div id="thankyou-section" class="bg-white p-4 rounded-md shadow-md text-center mt-6 hidden">
-            <h2 class="text-lg font-semibold text-gray-700">報名成功提交！</h2>
-            <p class="text-4xl mt-2">✅</p>
-            <p class="text-gray-600 mt-2">您將透過WhatsApp收到確認訊息及付款詳情。</p>
-            <p class="text-gray-600">完成付款後，報名將正式確認！</p>
-            <div class="mt-4">
-                <button onclick="clearForm()" class="btn bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">重新報名</button>
-            </div>
+        <div class="flex justify-between mt-4 gap-4">
+            <button onclick="returnToForm()" class="btn bg-gray-300 text-gray-700 px-6 py-3 rounded-md hover:bg-gray-400">返回</button>
+            <button onclick="submitForm()" class="btn bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700">提交</button>
+        </div>
+    </div>
+    <div id="thankyou-section" class="form-container text-center mt-6 hidden">
+        <h2 class="text-2xl font-bold text-center mb-4">報名成功提交！ 📝</h2>
+        <p class="text-4xl mt-2">✅</p>
+        <p class="text-gray-600 mt-2">您將透過WhatsApp收到確認訊息及付款詳情。</p>
+        <p class="text-gray-600">完成付款後，報名將正式確認！</p>
+        <div class="mt-4">
+            <button onclick="clearForm()" class="btn bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700">重新報名</button>
         </div>
     </div>
 
@@ -237,17 +283,12 @@
         }
 
         // 班別選擇邏輯
-        const classButtons = document.querySelectorAll('.class-button');
-        classButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                classButtons.forEach(btn => btn.classList.remove('bg-blue-600', 'hover:bg-blue-700'));
-                classButtons.forEach(btn => btn.classList.add('bg-gray-500', 'hover:bg-gray-600'));
-                button.classList.remove('bg-gray-500', 'hover:bg-gray-600');
-                button.classList.add('bg-blue-600', 'hover:bg-blue-700');
-                document.getElementById('class').value = button.dataset.class;
-                document.getElementById('class-error').classList.add('hidden');
-            });
-        });
+        function selectClass(card) {
+            document.querySelectorAll('.course-card').forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+            document.getElementById('class').value = card.dataset.value;
+            document.getElementById('class-error').classList.add('hidden');
+        }
 
         // 全選日期邏輯
         const selectAllButton = document.getElementById('selectAll');
@@ -404,13 +445,13 @@
             };
 
             // 顯示確認頁
-            document.getElementById('form-section').classList.add('hidden');
+            document.querySelector('.form-container').classList.add('hidden');
             document.getElementById('confirm-section').classList.remove('hidden');
         });
 
         function returnToForm() {
             document.getElementById('confirm-section').classList.add('hidden');
-            document.getElementById('form-section').classList.remove('hidden');
+            document.querySelector('.form-container').classList.remove('hidden');
         }
 
         function submitForm() {
@@ -453,8 +494,7 @@
             
             document.getElementById('class').value = '';
             document.getElementById('class-error').classList.add('hidden');
-            classButtons.forEach(btn => btn.classList.remove('bg-blue-600', 'hover:bg-blue-700'));
-            classButtons.forEach(btn => btn.classList.add('bg-gray-500', 'hover:bg-gray-600'));
+            document.querySelectorAll('.course-card').forEach(c => c.classList.remove('selected'));
             
             document.querySelectorAll('input[name="dates"]').forEach(cb => cb.checked = false);
             document.getElementById('date-selection-error').classList.add('hidden');
@@ -475,7 +515,7 @@
             
             document.getElementById('thankyou-section').classList.add('hidden');
             document.getElementById('confirm-section').classList.add('hidden');
-            document.getElementById('form-section').classList.remove('hidden');
+            document.querySelector('.form-container').classList.remove('hidden');
             
             window.formData = null;
         }
