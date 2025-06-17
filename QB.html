@@ -24,6 +24,7 @@
         .error { border-color: #ef4444; }
         .error-message { color: #ef4444; font-size: 0.875rem; margin-top: 0.25rem; }
         .course-row:hover { background-color: #f3f4f6; transition: background-color 0.2s; }
+        .course-row { cursor: pointer; }
         .btn { transition: transform 0.2s, background-color: 0.2s; }
         .btn:hover { transform: scale(1.05); }
         .course-card {
@@ -110,7 +111,7 @@
                 </ul>
             </ol>
             <p class="mt-4">📞 如有任何查詢，歡迎聯繫 歐Sir！</p>
-            <p>📱 WhatsApp: <a href="https://wa.me/85261504221?text=" target="_blank" class="text-blue-600 hover:underline">61504221</a></p>
+            <p>📱 WhatsApp: <a href="https://wa.me/85261504221?text=你好！想查詢鰂魚涌跆拳道班！" target="_blank" class="text-blue-600 hover:underline">61504221</a></p>
         </div>
         <div id="loadingSpinner" class="w-10 h-10 mx-auto my-4 border-4 border-t-transparent border-blue-600 rounded-full animate-spin hidden"></div>
         <div class="space-y-6 mt-6">
@@ -287,6 +288,14 @@
             return dateStr;
         }
 
+        // 切換複選框狀態
+        function toggleCheckbox(element) {
+            const checkbox = element.querySelector('input[type="checkbox"]');
+            if (checkbox && !checkbox.disabled) {
+                checkbox.checked = !checkbox.checked;
+            }
+        }
+
         // 渲染日期到 dateContainer
         function renderDates(dates) {
             const dateContainer = document.getElementById('dateContainer');
@@ -310,9 +319,10 @@
                     datesByMonth[month].forEach(({ date, display, index }) => {
                         const li = document.createElement('li');
                         li.className = 'flex items-center p-2 course-row';
+                        li.setAttribute('onclick', 'toggleCheckbox(this)');
                         li.innerHTML = `
                             <span class="flex-1">${escapeHtml(display)}</span>
-                            <input type="checkbox" id="date-${index}" name="dates" value="${escapeHtml(date)}" class="form-checkbox text-blue-600">
+                            <input type="checkbox" id="date-${index}" name="dates" value="${escapeHtml(date)}" class="form-checkbox text-blue-600" onclick="event.stopPropagation()">
                         `;
                         ul.appendChild(li);
                     });
