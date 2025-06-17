@@ -120,12 +120,12 @@
                 <div class="grid grid-cols-1 gap-4 mt-4">
                     <div class="course-card" data-value="junior" onclick="selectClass(this)">
                         <h3 class="text-lg font-semibold">初級班</h3>
-                        <p class="text-gray-600">3-7歲  白帶至綠帶</p>
+                        <p class="text-gray-600">3-7歲 白帶至綠帶</p>
                         <p class="text-gray-600">12:00pm - 1:00pm</p>
                     </div>
                     <div class="course-card" data-value="advanced" onclick="selectClass(this)">
                         <h3 class="text-lg font-semibold">進階班</h3>
-                        <p class="text-gray-600">8歲或以上  綠帶或以上</p>
+                        <p class="text-gray-600">8歲或以上 綠帶或以上</p>
                         <p class="text-gray-600">12:30pm - 2:00pm</p>
                     </div>
                 </div>
@@ -157,7 +157,7 @@
                         <span class="ml-2 text-sm text-gray-700">有</span>
                     </label>
                     <label class="inline-flex items-center">
-                        <input type="radio" name="leave" value="no" class="form-radio text-blue-600" required>
+                        <input type="radio" name="leave" value="no" class="form-radio text-blue-600" checked>
                         <span class="ml-2 text-sm text-gray-700">沒有</span>
                     </label>
                 </div>
@@ -510,7 +510,7 @@
             document.getElementById('date-selection-error').classList.add('hidden');
             selectAllButton.textContent = '全選';
             
-            leaveRadios.forEach(radio => radio.checked = false);
+            leaveRadios.forEach(radio => radio.checked = radio.value === 'no');
             document.getElementById('leave-error').classList.add('hidden');
             leaveDateInput.value = '';
             leaveDateInput.disabled = true;
