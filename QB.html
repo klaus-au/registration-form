@@ -4,254 +4,144 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>鰂魚涌跆拳道班報名表</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
-            color: #1f2937;
-        }
-        #errorMessage {
-            color: #b91c1c;
-            display: none;
-            position: fixed;
-            top: 1rem;
-            right: 1rem;
-            background: #fee2e2;
-            padding: 1rem;
-            border-radius: 0.5rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
-        }
-        #successMessage {
-            color: #15803d;
-            display: none;
-            position: fixed;
-            top: 1rem;
-            right: 1rem;
-            background: #dcfce7;
-            padding: 1rem;
-            border-radius: 0.5rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
-        }
-        #loadingSpinner {
-            display: none;
-            width: 2.5rem;
-            height: 2.5rem;
-            border-radius: 50%;
-            background: radial-gradient(circle, #3b82f6 10%, transparent 10.01%);
-            animation: pulse 1.5s ease-in-out infinite;
-        }
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 0.8; }
-            50% { transform: scale(1.2); opacity: 1; }
-        }
-        .form-container, .confirmation-container {
-            background: white;
-            border-radius: 0.5rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .form-container:hover, .confirmation-container:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
-        }
-        .action-button {
-            position: relative;
-            overflow: hidden;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        .action-button:hover:not(.cursor-not-allowed)::after {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.5), transparent 70%);
-            opacity: 1;
-            transition: opacity 0.3s ease;
-        }
-        .action-button:active {
-            transform: scale(0.95);
-        }
-        .fade-in {
-            opacity: 0;
-            transform: translateY(20px);
-            animation: fadeIn 0.5s ease forwards;
-        }
-        @keyframes fadeIn {
-            to { opacity: 1; transform: translateY(0); }
-        }
-        canvas#lights {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            opacity: 0.2;
-        }
-        .input-field {
-            transition: box-shadow 0.3s ease;
-        }
-        .input-field:focus-within {
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
-        }
-        .class-button {
-            transition: all 0.2s ease;
-        }
-        .class-button.selected {
-            background-color: #3b82f6 !important;
-            color: white !important;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
-        }
-        .date-checkbox {
-            transition: all 0.2s ease;
-        }
-        .date-checkbox:checked + .date-label {
-            background-color: #3b82f6;
-            color: white;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
-        }
-        .counter-button {
-            touch-action: none; /* 禁用手機觸摸縮放 */
-            min-width: 2.5rem; /* 確保按鈕寬度 */
-        }
-        .counter-button:disabled {
-            background-color: #e5e7eb;
-            cursor: not-allowed;
-        }
-        .terms-checkbox:checked + .terms-label {
-            background-color: #3b82f6;
-            color: white;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+        .error { border-color: #ef4444; }
+        .error-message { color: #ef4444; font-size: 0.875rem; margin-top: 0.25rem; }
+        .course-row:hover { background-color: #f3f4f6; transition: background-color 0.2s; }
+        .btn { transition: transform 0.2s, background-color: 0.2s; }
+        .btn:hover { transform: scale(1.05); }
+        @media (max-width: 640px) {
+            h1 { font-size: 1.5rem; }
+            .container { padding: 0.5rem; }
         }
     </style>
 </head>
-<body class="flex flex-col items-center min-h-screen p-4">
-    <canvas id="lights"></canvas>
-    <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4 fade-in">鰂魚涌跆拳道班報名表</h1>
-    <div id="errorMessage" class="text-sm sm:text-base">
-        <span id="errorText"></span>
-        <button onclick="document.getElementById('errorMessage').style.display = 'none'" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700">✕</button>
-    </div>
-    <div id="successMessage" class="text-sm sm:text-base">
-        <span id="successText">提交成功！</span>
-        <button onclick="document.getElementById('successMessage').style.display = 'none'" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700">✕</button>
-    </div>
-    <div id="loadingSpinner" class="mb-6"></div>
-    <div id="formContainer" class="form-container w-full max-w-lg p-6 fade-in">
-        <div class="space-y-4">
-            <div>
-                <label for="name" class="block text-sm font-medium text-gray-700">學員姓名 *</label>
-                <input id="name" type="text" class="input-field mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" required>
-            </div>
-            <div>
-                <label for="phone" class="block text-sm font-medium text-gray-700">聯絡電話 *</label>
-                <input id="phone" type="tel" class="input-field mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" required>
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700">所選班別 *</label>
-                <div class="flex space-x-4 mt-2">
-                    <button type="button" class="class-button action-button py-2 px-4 rounded-lg text-sm text-gray-700 bg-gray-200 hover:bg-gray-300" data-class="junior">初級 3-7歲 白帶至綠帶</button>
-                    <button type="button" class="class-button action-button py-2 px-4 rounded-lg text-sm text-gray-700 bg-gray-200 hover:bg-gray-300" data-class="advanced">進階 8歲或以上 綠帶或以上</button>
+<body class="bg-gray-100 font-sans">
+    <div class="container mx-auto p-4 max-w-2xl">
+        <div id="form-section" class="bg-white p-6 rounded-lg shadow-md">
+            <h1 class="text-2xl font-bold text-center text-gray-800">鰂魚涌跆拳道班報名表</h1>
+            <div id="loadingSpinner" class="w-10 h-10 mx-auto my-4 border-4 border-t-transparent border-blue-600 rounded-full animate-spin hidden"></div>
+            <div class="space-y-6 mt-6">
+                <div>
+                    <label for="name" class="block text-gray-700 font-semibold">學員姓名 *</label>
+                    <input id="name" type="text" class="w-full p-2 mt-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    <p id="name-error" class="error-message hidden">請輸入學員姓名！</p>
                 </div>
-                <input type="hidden" id="class" required>
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700">請選擇日期 *</label>
-                <div class="flex justify-between items-center mb-2">
-                    <span class="text-sm text-gray-600">至少選擇一個日期</span>
-                    <button type="button" id="selectAll" class="action-button py-1 px-3 rounded-lg text-sm text-white bg-blue-500 hover:bg-blue-600">全選</button>
+                <div>
+                    <label for="phone" class="block text-gray-700 font-semibold">聯絡電話 *</label>
+                    <input id="phone" type="tel" class="w-full p-2 mt-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    <p id="phone-error" class="error-message hidden">請輸入有效的8位電話號碼！</p>
                 </div>
-                <div id="dateContainer" class="grid gap-2"></div>
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700">上期有否請假 *</label>
-                <div class="mt-2 space-x-4">
-                    <label class="inline-flex items-center">
-                        <input type="radio" name="leave" value="yes" class="form-radio text-blue-600" required>
-                        <span class="ml-2 text-sm text-gray-700">有</span>
-                    </label>
-                    <label class="inline-flex items-center">
-                        <input type="radio" name="leave" value="no" class="form-radio text-blue-600" required>
-                        <span class="ml-2 text-sm text-gray-700">沒有</span>
-                    </label>
+                <div>
+                    <label class="block text-gray-700 font-semibold">所選班別 *</label>
+                    <div class="flex space-x-4 mt-2">
+                        <button type="button" class="class-button btn py-2 px-4 rounded-md text-sm text-white bg-gray-500 hover:bg-gray-600" data-class="junior">初級 3-7歲 白帶至綠帶</button>
+                        <button type="button" class="class-button btn py-2 px-4 rounded-md text-sm text-white bg-gray-500 hover:bg-gray-600" data-class="advanced">進階 8歲或以上 綠帶或以上</button>
+                    </div>
+                    <p id="class-error" class="error-message hidden">請選擇班別！</p>
+                    <input type="hidden" id="class" required>
                 </div>
-            </div>
-            <div>
-                <label for="leaveDate" class="block text-sm font-medium text-gray-700">請假日期（如有）</label>
-                <input id="leaveDate" type="text" placeholder="請輸入日期（如 28/2, 30/3, 16/4……）" class="input-field mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" disabled>
-            </div>
-            <div>
-                <label for="deduction" class="block text-sm font-medium text-gray-700">上期扣減 (堂) *</label>
-                <div class="flex items-center space-x-4 mt-1">
-                    <button type="button" id="decreaseDeduction" class="counter-button action-button py-2 px-4 rounded-lg text-sm text-gray-700 bg-gray-200 hover:bg-gray-300 disabled:bg-gray-100" disabled>-</button>
-                    <input id="deduction" type="number" min="0" max="15" value="0" class="input-field w-20 text-center rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" required readonly>
-                    <button type="button" id="increaseDeduction" class="counter-button action-button py-2 px-4 rounded-lg text-sm text-gray-700 bg-gray-200 hover:bg-gray-300">+</button>
+                <div>
+                    <label class="block text-gray-700 font-semibold">請選擇日期 *</label>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-sm text-gray-600">至少選擇一個日期</span>
+                        <button type="button" id="selectAll" class="btn py-1 px-3 rounded-md text-sm text-white bg-blue-600 hover:bg-blue-700">全選</button>
+                    </div>
+                    <table class="w-full mt-2 border-collapse">
+                        <thead>
+                            <tr class="bg-gray-200">
+                                <th class="p-2 text-left">日期</th>
+                                <th class="p-2 text-center">選擇</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dateContainer" class="text-gray-700"></tbody>
+                    </table>
+                    <p id="date-selection-error" class="error-message hidden">請選擇至少一個日期！</p>
                 </div>
-            </div>
-            <div>
-                <div class="mt-2">
-                    <p class="text-sm text-gray-600 mb-2">請閱讀以下條款並同意：</p>
-                    <ol class="list-decimal list-inside text-sm text-gray-700 mb-4">
-                        <li class="mb-1">課程名額有限，若報名人數過多，教練將根據報名或學員水平進行篩選。</li>
-                        <li class="mb-1">課程內容可能因學員水平作出調整。</li>
-                        <li class="mb-1">若天文台懸掛八號或以上颱風或黑色暴雨警告，當天課程將取消。紅雨或黃雨則課程照常進行。教練會透過WhatsApp通知進一步安排。</li>
-                        <li class="mb-1">為確保安全，參加者必須遵守教練指示。違反守則者，教練保留權利要求其立即退出課程，所繳費用不予退還。參加者亦需確認自身健康狀況適合參與。</li>
-                    </ol>
-                    <div class="flex items-center space-x-2">
-                        <input type="checkbox" id="terms" name="terms" class="terms-checkbox form-checkbox text-blue-600" required>
-                        <label for="terms" class="terms-label py-2 px-4 rounded-lg text-sm text-gray-700 bg-gray-200 hover:bg-gray-300">我已閱讀並同意上述條款</label>
+                <div>
+                    <label class="block text-gray-700 font-semibold">上期有否請假 *</label>
+                    <div class="mt-2 space-x-4">
+                        <label class="inline-flex items-center">
+                            <input type="radio" name="leave" value="yes" class="form-radio text-blue-600" required>
+                            <span class="ml-2 text-sm text-gray-700">有</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input type="radio" name="leave" value="no" class="form-radio text-blue-600" required>
+                            <span class="ml-2 text-sm text-gray-700">沒有</span>
+                        </label>
+                    </div>
+                    <p id="leave-error" class="error-message hidden">請選擇是否請假！</p>
+                </div>
+                <div>
+                    <label for="leaveDate" class="block text-gray-700 font-semibold">請假日期（如有）</label>
+                    <input id="leaveDate" type="text" placeholder="請輸入日期（如 28/2, 30/3, 16/4……）" class="w-full p-2 mt-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" disabled>
+                    <p id="leave-date-error" class="error-message hidden">請輸入請假日期！</p>
+                </div>
+                <div>
+                    <label for="deduction" class="block text-gray-700 font-semibold">上期扣減 (堂) *</label>
+                    <div class="flex items-center space-x-4 mt-1">
+                        <button type="button" id="decreaseDeduction" class="counter-button btn py-2 px-4 rounded-md text-sm text-white bg-gray-500 hover:bg-gray-600 disabled:bg-gray-300" disabled>-</button>
+                        <input id="deduction" type="number" min="0" max="15" value="0" class="w-20 text-center p-2 mt-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required readonly>
+                        <button type="button" id="increaseDeduction" class="counter-button btn py-2 px-4 rounded-md text-sm text-white bg-gray-500 hover:bg-gray-600">+</button>
                     </div>
                 </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-700">同意條款</h3>
+                    <div class="mt-4">
+                        <p class="text-gray-600">請閱讀以下條款並同意：</p>
+                        <ol class="list-decimal text-gray-600 ml-4">
+                            <li class="mt-2">課程名額有限，若報名人數過多，教練將根據報名或學員水平進行篩選。</li>
+                            <li class="mt-2">課程內容可能因學員水平作出調整。</li>
+                            <li class="mt-2">若天文台懸掛八號或以上颱風或黑色暴雨警告，當天課程將取消。紅雨或黃雨則課程照常進行。教練會透過WhatsApp通知進一步安排。</li>
+                            <li class="mt-2">為確保安全，參加者必須遵守教練指示。違反守則者，教練保留權利要求其立即退出課程，所繳費用不予退還。參加者亦需確認自身健康狀況適合參與。</li>
+                        </ol>
+                        <div class="mt-2 flex items-center">
+                            <input type="checkbox" id="terms" name="terms" class="form-checkbox mr-2 text-blue-600" required>
+                            <label for="terms" class="text-gray-700">我已閱讀並同意上述條款</label>
+                        </div>
+                        <p id="terms-error" class="error-message hidden">請同意條款！</p>
+                    </div>
+                </div>
+                <div class="flex justify-between items-center">
+                    <button onclick="clearForm()" class="btn bg-gray-500 text-white px-6 py-2 rounded-md hover:bg-gray-600">清除表單</button>
+                    <button id="submitButton" type="button" class="btn bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700">下一步</button>
+                </div>
             </div>
-            <div>
-                <button id="submitButton" type="button" class="action-button w-full py-2 px-4 rounded-lg text-center text-white text-sm bg-blue-500 hover:bg-blue-600">提交</button>
+        </div>
+        <div id="confirm-section" class="bg-white p-6 rounded-lg shadow-md mt-4 hidden">
+            <h2 class="text-lg font-semibold text-center text-gray-700">請確認您的報名資料</h2>
+            <div class="text-gray-600 space-y-2 mt-4">
+                <p><strong>學員姓名：</strong><span id="confirm-name"></span></p>
+                <p><strong>聯絡電話：</strong><span id="confirm-phone"></span></p>
+                <p><strong>班別：</strong><span id="confirm-class"></span></p>
+                <p><strong>選擇日期：</strong></p>
+                <ul id="confirm-dates" class="list-disc text-gray-600 ml-6"></ul>
+                <p><strong>上期有否請假：</strong><span id="confirm-leave"></span></p>
+                <p><strong>請假日期（如有）：</strong><span id="confirm-leave-date"></span></p>
+                <p><strong>上期扣減 (堂)：</strong><span id="confirm-deduction"></span></p>
+            </div>
+            <div class="flex justify-between mt-4">
+                <button onclick="returnToForm()" class="btn bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600">返回</button>
+                <button onclick="submitForm()" class="btn bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">提交</button>
+            </div>
+        </div>
+        <div id="thankyou-section" class="bg-white p-4 rounded-md shadow-md text-center mt-6 hidden">
+            <h2 class="text-lg font-semibold text-gray-700">報名成功提交！</h2>
+            <p class="text-4xl mt-2">✅</p>
+            <p class="text-gray-600 mt-2">您將透過WhatsApp收到確認訊息及付款詳情。</p>
+            <p class="text-gray-600">完成付款後，報名將正式確認！</p>
+            <div class="mt-4">
+                <button onclick="clearForm()" class="btn bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">重新報名</button>
             </div>
         </div>
     </div>
-    <div id="confirmationPage" class="confirmation-container w-full max-w-lg p-6 hidden fade-in">
-        <p class="text-lg text-gray-700 mb-4">感謝您的回覆！<br>已經收到您的報名，稍後會收到確認課堂訊息，確認後再付款。</p>
-        <button id="returnButton" type="button" class="action-button w-full py-2 px-4 rounded-lg text-center text-white text-sm bg-blue-500 hover:bg-blue-600">返回</button>
-    </div>
 
     <script>
-        // Google Sheet 連結: https://docs.google.com/spreadsheets/d/1IGczhrahIZF2W6_RUUU9ib5vQ1vkLVDIQEObWxEStgU/edit?gid=550660241#gid=550660241
+        // Google Sheet 連結
         const spreadsheetId = '1IGczhrahIZF2W6_RUUU9ib5vQ1vkLVDIQEObWxEStgU';
         const sheetName = 'QB';
         const apiUrl = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?tqx=out:json&tq=SELECT%20G%20WHERE%20G%20IS%20NOT%20NULL%20OFFSET%201&sheet=${encodeURIComponent(sheetName)}`;
-
-        // 漂浮光點
-        const canvas = document.getElementById('lights');
-        const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        const lights = [];
-        for (let i = 0; i < 50; i++) {
-            lights.push({
-                x: Math.random() * canvas.width,
-                y: Math.random() * canvas.height,
-                radius: Math.random() * 1.5 + 0.5,
-                vx: Math.random() * 0.2 - 0.1,
-                vy: Math.random() * 0.2 - 0.1
-            });
-        }
-        function animateLights() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            lights.forEach(l => {
-                l.x += l.vx;
-                l.y += l.vy;
-                if (l.x < 0 || l.x > canvas.width) l.vx *= -1;
-                if (l.y < 0 || l.y > canvas.height) l.vy *= -1;
-                ctx.beginPath();
-                ctx.arc(l.x, l.y, l.radius, 0, Math.PI * 2);
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
-                ctx.fill();
-            });
-            requestAnimationFrame(animateLights);
-        }
-        animateLights();
 
         // 轉義函數
         function escapeHtml(str) {
@@ -264,7 +154,7 @@
         // 從 Google Sheet 獲取日期
         async function fetchSheetData() {
             const spinner = document.getElementById('loadingSpinner');
-            spinner.style.display = 'block';
+            spinner.classList.remove('hidden');
             try {
                 const response = await fetch(apiUrl);
                 if (!response.ok) {
@@ -281,40 +171,38 @@
                     data.table.rows.forEach((row, index) => {
                         const date = row.c[0]?.v;
                         if (date) {
-                            const div = document.createElement('div');
-                            div.className = 'flex items-center space-x-2';
-                            div.innerHTML = `
-                                <input type="checkbox" id="date-${index}" name="dates" value="${escapeHtml(date)}" class="date-checkbox form-checkbox text-blue-600">
-                                <label for="date-${index}" class="date-label py-2 px-4 rounded-lg text-sm text-gray-700 bg-gray-200 hover:bg-gray-300">${escapeHtml(date)}</label>
+                            const tr = document.createElement('tr');
+                            tr.className = 'course-row';
+                            tr.innerHTML = `
+                                <td class="p-2">${escapeHtml(date)}</td>
+                                <td class="p-2 text-center">
+                                    <input type="checkbox" id="date-${index}" name="dates" value="${escapeHtml(date)}" class="form-checkbox text-blue-600">
+                                </td>
                             `;
-                            dateContainer.appendChild(div);
+                            dateContainer.appendChild(tr);
                         }
                     });
-                    document.getElementById('errorMessage').style.display = 'none';
                 } else {
-                    showError('工作表中無有效日期資料，請確保 G 欄從第 2 行開始有資料，並檢查工作表名稱是否為 "' + sheetName + '"。');
+                    alert('工作表中無有效日期資料，請確保 G 欄從第 2 行開始有資料，並檢查工作表名稱是否為 "' + sheetName + '"。');
                 }
             } catch (error) {
-                showError(`載入日期資料失敗：${error.message}。請確保 Google Sheet 已設為公開，且工作表名稱正確。`);
+                alert(`載入日期資料失敗：${error.message}。請確保 Google Sheet 已設為公開，且工作表名稱正確。`);
                 console.error('Fetch error:', error);
             } finally {
-                spinner.style.display = 'none';
+                spinner.classList.add('hidden');
             }
-        }
-
-        function showError(message) {
-            const errorDiv = document.getElementById('errorMessage');
-            document.getElementById('errorText').textContent = message;
-            errorDiv.style.display = 'block';
         }
 
         // 班別選擇邏輯
         const classButtons = document.querySelectorAll('.class-button');
         classButtons.forEach(button => {
             button.addEventListener('click', () => {
-                classButtons.forEach(btn => btn.classList.remove('selected'));
-                button.classList.add('selected');
+                classButtons.forEach(btn => btn.classList.remove('bg-blue-600', 'hover:bg-blue-700'));
+                classButtons.forEach(btn => btn.classList.add('bg-gray-500', 'hover:bg-gray-600'));
+                button.classList.remove('bg-gray-500', 'hover:bg-gray-600');
+                button.classList.add('bg-blue-600', 'hover:bg-blue-700');
                 document.getElementById('class').value = button.dataset.class;
+                document.getElementById('class-error').classList.add('hidden');
             });
         });
 
@@ -336,6 +224,7 @@
                 if (radio.value === 'no') {
                     leaveDateInput.value = '';
                 }
+                document.getElementById('leave-error').classList.add('hidden');
             });
         });
 
@@ -380,14 +269,12 @@
             }
         }, 200));
 
-        // 表單提交與確認頁邏輯
-        const formContainer = document.getElementById('formContainer');
-        const confirmationPage = document.getElementById('confirmationPage');
-        const returnButton = document.getElementById('returnButton');
-
+        // 表單驗證與確認頁邏輯
         document.getElementById('submitButton').addEventListener('click', () => {
-            const name = document.getElementById('name').value.trim();
-            const phone = document.getElementById('phone').value.trim();
+            const nameInput = document.getElementById('name');
+            const name = nameInput.value.trim();
+            const phoneInput = document.getElementById('phone');
+            const phone = phoneInput.value.trim();
             const classSelected = document.getElementById('class').value;
             const selectedDates = Array.from(document.querySelectorAll('input[name="dates"]:checked')).map(cb => cb.value);
             const leave = document.querySelector('input[name="leave"]:checked')?.value;
@@ -395,41 +282,160 @@
             const deduction = document.getElementById('deduction').value;
             const terms = document.getElementById('terms').checked;
 
-            if (!name || !phone || !classSelected || selectedDates.length === 0 || !leave || !deduction || !terms) {
-                showError('請填寫所有必填字段，選擇至少一個日期，並同意條款！');
+            // 重置錯誤狀態
+            nameInput.classList.remove('error');
+            document.getElementById('name-error').classList.add('hidden');
+            phoneInput.classList.remove('error');
+            document.getElementById('phone-error').classList.add('hidden');
+            document.getElementById('class-error').classList.add('hidden');
+            document.getElementById('date-selection-error').classList.add('hidden');
+            document.getElementById('leave-error').classList.add('hidden');
+            leaveDateInput.classList.remove('error');
+            document.getElementById('leave-date-error').classList.add('hidden');
+            document.getElementById('terms-error').classList.add('hidden');
+
+            // 驗證姓名
+            if (!name) {
+                nameInput.classList.add('error');
+                document.getElementById('name-error').classList.remove('hidden');
                 return;
             }
 
-            if (leave === 'yes' && !leaveDate) {
-                showError('請輸入請假日期！');
+            // 驗證電話
+            const phoneRegex = /^\d{8}$/;
+            if (!phoneRegex.test(phone)) {
+                phoneInput.classList.add('error');
+                document.getElementById('phone-error').classList.remove('hidden');
                 return;
             }
+
+            // 驗證班別
+            if (!classSelected) {
+                document.getElementById('class-error').classList.remove('hidden');
+                return;
+            }
+
+            // 驗證日期
+            if (selectedDates.length === 0) {
+                document.getElementById('date-selection-error').classList.remove('hidden');
+                return;
+            }
+
+            // 驗證請假
+            if (!leave) {
+                document.getElementById('leave-error').classList.remove('hidden');
+                return;
+            }
+
+            // 驗證請假日期
+            if (leave === 'yes' && !leaveDate) {
+                leaveDateInput.classList.add('error');
+                document.getElementById('leave-date-error').classList.remove('hidden');
+                return;
+            }
+
+            // 驗證條款
+            if (!terms) {
+                document.getElementById('terms-error').classList.remove('hidden');
+                return;
+            }
+
+            // 更新確認頁
+            document.getElementById('confirm-name').textContent = name;
+            document.getElementById('confirm-phone').textContent = phone;
+            document.getElementById('confirm-class').textContent = classSelected === 'junior' ? '初級 3-7歲 白帶至綠帶' : '進階 8歲或以上 綠帶或以上';
+            document.getElementById('confirm-dates').innerHTML = selectedDates.map(date => `<li>${date}</li>`).join('');
+            document.getElementById('confirm-leave').textContent = leave === 'yes' ? '有' : '沒有';
+            document.getElementById('confirm-leave-date').textContent = leaveDate || '無';
+            document.getElementById('confirm-deduction').textContent = deduction;
+
+            // 儲存數據
+            window.formData = {
+                name,
+                phone,
+                class: classSelected,
+                dates: selectedDates,
+                leave,
+                leaveDate,
+                deduction
+            };
 
             // 顯示確認頁
-            formContainer.classList.add('hidden');
-            confirmationPage.classList.remove('hidden');
+            document.getElementById('form-section').classList.add('hidden');
+            document.getElementById('confirm-section').classList.remove('hidden');
         });
 
-        // 返回按鈕邏輯
-        returnButton.addEventListener('click', () => {
-            // 清空表單
+        function returnToForm() {
+            document.getElementById('confirm-section').classList.add('hidden');
+            document.getElementById('form-section').classList.remove('hidden');
+        }
+
+        function submitForm() {
+            const { name, phone, class: classSelected, dates, leave, leaveDate, deduction } = window.formData;
+            const data = {
+                name,
+                phone,
+                class: classSelected,
+                dates,
+                leave,
+                leaveDate,
+                deduction
+            };
+
+            // 提交到 Google Apps Script（假設與暑期表單類似）
+            fetch('https://script.google.com/macros/s/AKfycbxEGB28SPD3QT5u9s5UK3ysFPs4iOkXg2vAHGPty18vprmqIEqm6ooPhRmoCOTJpaBg/exec', {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            })
+            .then(() => {
+                document.getElementById('confirm-section').classList.add('hidden');
+                document.getElementById('thankyou-section').classList.remove('hidden');
+            })
+            .catch(error => {
+                alert(`提交失敗：${error.message}\n請檢查控制台錯誤訊息並聯繫支援。`);
+                console.error('Submit error:', error);
+            });
+        }
+
+        function clearForm() {
             document.getElementById('name').value = '';
+            document.getElementById('name').classList.remove('error');
+            document.getElementById('name-error').classList.add('hidden');
+            
             document.getElementById('phone').value = '';
+            document.getElementById('phone').classList.remove('error');
+            document.getElementById('phone-error').classList.add('hidden');
+            
             document.getElementById('class').value = '';
+            document.getElementById('class-error').classList.add('hidden');
+            classButtons.forEach(btn => btn.classList.remove('bg-blue-600', 'hover:bg-blue-700'));
+            classButtons.forEach(btn => btn.classList.add('bg-gray-500', 'hover:bg-gray-600'));
+            
             document.querySelectorAll('input[name="dates"]').forEach(cb => cb.checked = false);
+            document.getElementById('date-selection-error').classList.add('hidden');
             selectAllButton.textContent = '全選';
+            
             leaveRadios.forEach(radio => radio.checked = false);
+            document.getElementById('leave-error').classList.add('hidden');
             leaveDateInput.value = '';
             leaveDateInput.disabled = true;
+            leaveDateInput.classList.remove('error');
+            document.getElementById('leave-date-error').classList.add('hidden');
+            
             deductionInput.value = '0';
             updateDeductionButtons();
-            classButtons.forEach(btn => btn.classList.remove('selected'));
+            
             document.getElementById('terms').checked = false;
-
-            // 切換回表單
-            confirmationPage.classList.add('hidden');
-            formContainer.classList.remove('hidden');
-        });
+            document.getElementById('terms-error').classList.add('hidden');
+            
+            document.getElementById('thankyou-section').classList.add('hidden');
+            document.getElementById('confirm-section').classList.add('hidden');
+            document.getElementById('form-section').classList.remove('hidden');
+            
+            window.formData = null;
+        }
 
         // 初次載入日期資料
         fetchSheetData();
