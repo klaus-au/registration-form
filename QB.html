@@ -174,11 +174,8 @@
             </div>
             <div id="deduction-section" class="hidden">
                 <label for="deduction" class="block text-gray-700 font-semibold">上期扣減 (堂) *</label>
-                <div class="flex items-center space-x-4 mt-1">
-                    <button type="button" id="decreaseDeduction" class="counter-button btn py-2 px-4 rounded-md text-sm text-white bg-gray-500 hover:bg-gray-600 disabled:bg-gray-300" disabled>-</button>
-                    <input id="deduction" type="number" min="0" max="15" value="0" class="w-20 text-center p-2 mt-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required readonly>
-                    <button type="button" id="increaseDeduction" class="counter-button btn py-2 px-4 rounded-md text-sm text-white bg-gray-500 hover:bg-gray-600">+</button>
-                </div>
+                <input id="deduction" type="number" min="0" step="1" value="0" class="w-20 text-center p-2 mt-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                <p id="deduction-error" class="error-message hidden">請輸入非負整數！</p>
             </div>
             <div>
                 <h3 class="text-lg font-semibold text-gray-700">同意條款</h3>
@@ -412,51 +409,11 @@
                 if (!isYes) {
                     leaveDateInput.value = '';
                     deductionInput.value = '0';
-                    updateDeductionButtons();
                 }
                 document.getElementById('leave-error').classList.add('hidden');
+                document.getElementById('deduction-error').classList.add('hidden');
             });
         });
-
-        // 扣減計數器邏輯（添加防抖）
-        const decreaseButton = document.getElementById('decreaseDeduction');
-        const increaseButton = document.getElementById('increaseDeduction');
-        let isProcessing = false;
-
-        function updateDeductionButtons() {
-            const value = parseInt(deductionInput.value) || 0;
-            decreaseButton.disabled = value <= 0;
-            increaseButton.disabled = value >= 15;
-        }
-
-        function debounce(func, wait) {
-            let timeout;
-            return function (...args) {
-                if (isProcessing) return;
-                isProcessing = true;
-                clearTimeout(timeout);
-                timeout = setTimeout(() => {
-                    func.apply(this, args);
-                    isProcessing = false;
-                }, wait);
-            };
-        }
-
-        decreaseButton.addEventListener('click', debounce(() => {
-            let value = parseInt(deductionInput.value) || 0;
-            if (value > 0) {
-                deductionInput.value = value - 1;
-                updateDeductionButtons();
-            }
-        }, 200));
-
-        increaseButton.addEventListener('click', debounce(() => {
-            let value = parseInt(deductionInput.value) || 0;
-            if (value < 15) {
-                deductionInput.value = value + 1;
-                updateDeductionButtons();
-            }
-        }, 200));
 
         // 表單驗證與確認頁邏輯
         document.getElementById('submitButton').addEventListener('click', () => {
@@ -471,7 +428,8 @@
             }));
             const leave = document.querySelector('input[name="leave"]:checked')?.value;
             const leaveDate = document.getElementById('leaveDate').value.trim();
-            const deduction = document.getElementById('deduction').value;
+            const deductionValue = deductionInput.value.trim();
+            const deduction = parseInt(deductionValue, 10);
             const terms = document.getElementById('terms').checked;
 
             // 重置錯誤狀態
@@ -484,6 +442,8 @@
             document.getElementById('leave-error').classList.add('hidden');
             leaveDateInput.classList.remove('error');
             document.getElementById('leave-date-error').classList.add('hidden');
+            deductionInput.classList.remove('error');
+            document.getElementById('deduction-error').classList.add('hidden');
             document.getElementById('terms-error').classList.add('hidden');
 
             // 驗證姓名
@@ -526,6 +486,13 @@
                 return;
             }
 
+            // 驗證扣減
+            if (leave === 'yes' && (isNaN(deduction) || deduction < 0 || !Number.isInteger(Number(deductionValue)))) {
+                deductionInput.classList.add('error');
+                document.getElementById('deduction-error').classList.remove('hidden');
+                return;
+            }
+
             // 驗證條款
             if (!terms) {
                 document.getElementById('terms-error').classList.remove('hidden');
@@ -539,7 +506,7 @@
             document.getElementById('confirm-dates').innerHTML = selectedDates.map(date => `<li>${date.display}</li>`).join('');
             document.getElementById('confirm-leave').textContent = leave === 'yes' ? '有' : '沒有';
             document.getElementById('confirm-leave-date').textContent = leaveDate || '無';
-            document.getElementById('confirm-deduction').textContent = deduction;
+            document.getElementById('confirm-deduction').textContent = leave === 'yes' ? deduction : '0';
 
             // 儲存數據
             window.formData = {
@@ -549,7 +516,7 @@
                 dates: selectedDates,
                 leave,
                 leaveDate,
-                deduction
+                deduction: leave === 'yes' ? deduction : 0
             };
 
             // 顯示確認頁
@@ -615,7 +582,8 @@
             leaveDateSection.classList.add('hidden');
             deductionInput.value = '0';
             deductionSection.classList.add('hidden');
-            updateDeductionButtons();
+            deductionInput.classList.remove('error');
+            document.getElementById('deduction-error').classList.add('hidden');
             
             document.getElementById('terms').checked = false;
             document.getElementById('terms-error').classList.add('hidden');
