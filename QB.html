@@ -111,7 +111,7 @@
                 </ul>
             </ol>
             <p class="mt-4">📞 如有任何查詢，歡迎聯繫 歐Sir！</p>
-            <p>📱 WhatsApp: <a href="https://wa.me/85261504221?text=你好！想查詢鰂魚涌跆拳道班！" target="_blank" class="text-blue-600 hover:underline">61504221</a></p>
+            <p>📱 WhatsApp: <a href="https://wa.me/85261504221?text=" target="_blank" class="text-blue-600 hover:underline">61504221</a></p>
         </div>
         <div id="loadingSpinner" class="w-10 h-10 mx-auto my-4 border-4 border-t-transparent border-blue-600 rounded-full animate-spin hidden"></div>
         <div class="space-y-6 mt-6">
@@ -446,11 +446,13 @@
             document.getElementById('deduction-error').classList.add('hidden');
             document.getElementById('terms-error').classList.add('hidden');
 
+            let firstErrorElement = null;
+
             // 驗證姓名
             if (!name) {
                 nameInput.classList.add('error');
                 document.getElementById('name-error').classList.remove('hidden');
-                return;
+                firstErrorElement = nameInput;
             }
 
             // 驗證電話
@@ -458,44 +460,53 @@
             if (!phoneRegex.test(phone)) {
                 phoneInput.classList.add('error');
                 document.getElementById('phone-error').classList.remove('hidden');
-                return;
+                if (!firstErrorElement) firstErrorElement = phoneInput;
             }
 
             // 驗證班別
             if (!classSelected) {
                 document.getElementById('class-error').classList.remove('hidden');
-                return;
+                if (!firstErrorElement) firstErrorElement = document.getElementById('class-error');
             }
 
             // 驗證日期
             if (selectedDates.length === 0) {
                 document.getElementById('date-selection-error').classList.remove('hidden');
-                return;
+                if (!firstErrorElement) firstErrorElement = document.getElementById('date-selection-error');
             }
 
             // 驗證請假
             if (!leave) {
                 document.getElementById('leave-error').classList.remove('hidden');
-                return;
+                if (!firstErrorElement) firstErrorElement = document.getElementById('leave-error');
             }
 
             // 驗證請假日期
             if (leave === 'yes' && !leaveDate) {
                 leaveDateInput.classList.add('error');
                 document.getElementById('leave-date-error').classList.remove('hidden');
-                return;
+                if (!firstErrorElement) firstErrorElement = leaveDateInput;
             }
 
             // 驗證扣減
             if (leave === 'yes' && (isNaN(deduction) || deduction < 0 || !Number.isInteger(Number(deductionValue)))) {
                 deductionInput.classList.add('error');
                 document.getElementById('deduction-error').classList.remove('hidden');
-                return;
+                if (!firstErrorElement) firstErrorElement = deductionInput;
             }
 
             // 驗證條款
             if (!terms) {
                 document.getElementById('terms-error').classList.remove('hidden');
+                if (!firstErrorElement) firstErrorElement = document.getElementById('terms');
+            }
+
+            // 如果有錯誤，滾動到第一個錯誤欄位並聚焦
+            if (firstErrorElement) {
+                firstErrorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                if (firstErrorElement.tagName === 'INPUT' || firstErrorElement.tagName === 'TEXTAREA') {
+                    firstErrorElement.focus();
+                }
                 return;
             }
 
