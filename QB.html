@@ -237,6 +237,9 @@
         const sheetName = 'QB';
         const apiUrl = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?tqx=out:json&tq=SELECT%20G%20WHERE%20G%20IS%20NOT%20NULL%20OFFSET%201&sheet=${encodeURIComponent(sheetName)}`;
 
+        // Google Form 提交 URL
+        const googleFormUrl = 'https://docs.google.com/forms/d/e/1FAIpQLScfWNLOP7CqV__g7LtepE9JlAtg49VOWdiWHsSTHWi7gQfiEw/formResponse';
+
         // 轉義函數
         function escapeHtml(str) {
             if (!str) return '';
@@ -261,6 +264,17 @@
             { date: '23/3', display: '3月23日', month: 3 },
             { date: '30/3', display: '3月30日', month: 3 }
         ];
+
+        // 將 dd/mm 轉為 MM月DD日（例如 5/1 -> 01月05日）
+        function toGoogleFormDateFormat(dateStr) {
+            const match = dateStr.match(/^(\d{1,2})\/(\d{1,2})$/);
+            if (match) {
+                const day = parseInt(match[1], 10).toString().padStart(2, '0');
+                const month = parseInt(match[2], 10).toString().padStart(2, '0');
+                return `${month}月${day}日`;
+            }
+            return dateStr;
+        }
 
         // 將 MM月DD日 轉為 dd/mm
         function toBackendFormat(dateStr) {
@@ -522,7 +536,7 @@
                 name,
                 phone,
                 class: classSelected,
-                dates: selectedDates.map(date => date.value),
+                dates: selectedDates,
                 leave,
                 leaveDate,
                 deduction
@@ -540,22 +554,22 @@
 
         function submitForm() {
             const { name, phone, class: classSelected, dates, leave, leaveDate, deduction } = window.formData;
-            const data = {
-                name,
-                phone,
-                class: classSelected,
-                dates,
-                leave,
-                leaveDate,
-                deduction
-            };
 
-            // 提交到 Google Apps Script
-            fetch('https://script.google.com/macros/s/AKfycbxEGB28SPD3QT5u9s5UK3ysFPs4iOkXg2vAHGPty18vprmqIEqm6ooPhRmoCOTJpaBg/exec', {
+            // 準備 Google Form 數據
+            const formData = new FormData();
+            formData.append('entry.1485466301', name);
+            formData.append('entry.1919163075', phone);
+            formData.append('entry.781986668', classSelected === 'junior' ? '初級 3-7歲 白帶至綠帶' : '進階 8歲或以上 綠帶或以上');
+            formData.append('entry.1067771173', dates.map(date => toGoogleFormDateFormat(date.value)).join(','));
+            formData.append('entry.1731377011', leave === 'yes' ? '有' : '沒有');
+            formData.append('entry.762426758', leaveDate || '');
+            formData.append('entry.1394157809', deduction);
+
+            // 提交到 Google Form
+            fetch(googleFormUrl, {
                 method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
+                body: formData,
+                mode: 'no-cors'
             })
             .then(() => {
                 document.getElementById('confirm-section').classList.add('hidden');
