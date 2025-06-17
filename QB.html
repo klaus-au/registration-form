@@ -21,6 +21,45 @@
     <div class="container mx-auto p-4 max-w-2xl">
         <div id="form-section" class="bg-white p-6 rounded-lg shadow-md">
             <h1 class="text-2xl font-bold text-center text-gray-800">鰂魚涌跆拳道班報名表</h1>
+            <div class="text-left text-gray-600 mt-4">
+                <p>家長你好！</p>
+                <p class="mt-2">鰂魚涌跆拳道班分2個時段</p>
+                <p>逢星期日上堂</p>
+                <ul class="list-none mt-2">
+                    <li class="ml-4">初級 3-7歲 白帶至綠帶</li>
+                    <li class="ml-4">12:00pm-1:00pm</li>
+                    <li class="ml-4 mt-2">進階 8歲或以上 綠帶或以上</li>
+                    <li class="ml-4">12:30pm-2:00pm</li>
+                </ul>
+                <p class="mt-4">每節課堂$110元</p>
+                <p>分4期收費</p>
+                <ul class="list-none mt-2">
+                    <li class="ml-4">1月-3月</li>
+                    <li class="ml-4">4月-6月</li>
+                    <li class="ml-4">7月-9月</li>
+                    <li class="ml-4">10月-12月</li>
+                </ul>
+                <p class="mt-4">家長可用以下方式付款：</p>
+                <ol class="list-decimal ml-4 mt-2">
+                    <li>FPS</li>
+                    <ul class="list-none ml-4">
+                        <li>戶口編號: 163115645</li>
+                        <li>名稱：Practical Club Consultants Company Limited</li>
+                        <li>付款訊息請寫上小朋友全名</li>
+                        <li>完成後截圖WhatsApp教練確認</li>
+                    </ul>
+                    <li class="mt-2">支票</li>
+                    <ul class="list-none ml-4">
+                        <li>支票抬頭寫: 香港實用跆拳道協會</li>
+                    </ul>
+                    <li class="mt-2">現金</li>
+                    <ul class="list-none ml-4">
+                        <li>第一堂上堂或之前交給教練</li>
+                    </ul>
+                </ol>
+                <p class="mt-4">如有查詢，歡迎聯絡歐sir，謝謝！</p>
+                <p><a href="https://wa.me/85261504221?text=你好！想查詢鰂魚涌跆拳道班！" target="_blank" class="text-blue-600 hover:underline">WhatsApp: 61504221</a></p>
+            </div>
             <div id="loadingSpinner" class="w-10 h-10 mx-auto my-4 border-4 border-t-transparent border-blue-600 rounded-full animate-spin hidden"></div>
             <div class="space-y-6 mt-6">
                 <div>
@@ -35,9 +74,9 @@
                 </div>
                 <div>
                     <label class="block text-gray-700 font-semibold">所選班別 *</label>
-                    <div class="flex space-x-4 mt-2">
-                        <button type="button" class="class-button btn py-2 px-4 rounded-md text-sm text-white bg-gray-500 hover:bg-gray-600" data-class="junior">初級 3-7歲 白帶至綠帶</button>
-                        <button type="button" class="class-button btn py-2 px-4 rounded-md text-sm text-white bg-gray-500 hover:bg-gray-600" data-class="advanced">進階 8歲或以上 綠帶或以上</button>
+                    <div class="space-y-4 mt-2">
+                        <button type="button" class="class-button btn py-2 px-4 rounded-md text-sm text-white bg-gray-500 hover:bg-gray-600 w-full" data-class="junior">初級 3-7歲 白帶至綠帶</button>
+                        <button type="button" class="class-button btn py-2 px-4 rounded-md text-sm text-white bg-gray-500 hover:bg-gray-600 w-full" data-class="advanced">進階 8歲或以上 綠帶或以上</button>
                     </div>
                     <p id="class-error" class="error-message hidden">請選擇班別！</p>
                     <input type="hidden" id="class" required>
@@ -95,6 +134,7 @@
                             <li class="mt-2">課程內容可能因學員水平作出調整。</li>
                             <li class="mt-2">若天文台懸掛八號或以上颱風或黑色暴雨警告，當天課程將取消。紅雨或黃雨則課程照常進行。教練會透過WhatsApp通知進一步安排。</li>
                             <li class="mt-2">為確保安全，參加者必須遵守教練指示。違反守則者，教練保留權利要求其立即退出課程，所繳費用不予退還。參加者亦需確認自身健康狀況適合參與。</li>
+                            <li class="mt-2">若學員需請假，請提前通過WhatsApp通知教練，經確認後可於下一期學費中扣減相關費用。</li>
                         </ol>
                         <div class="mt-2 flex items-center">
                             <input type="checkbox" id="terms" name="terms" class="form-checkbox mr-2 text-blue-600" required>
@@ -120,6 +160,7 @@
                 <p><strong>上期有否請假：</strong><span id="confirm-leave"></span></p>
                 <p><strong>請假日期（如有）：</strong><span id="confirm-leave-date"></span></p>
                 <p><strong>上期扣減 (堂)：</strong><span id="confirm-deduction"></span></p>
+                <p><strong>條款同意：</strong>已閱讀並同意所有條款</p>
             </div>
             <div class="flex justify-between mt-4">
                 <button onclick="returnToForm()" class="btn bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600">返回</button>
@@ -382,7 +423,7 @@
                 deduction
             };
 
-            // 提交到 Google Apps Script（假設與暑期表單類似）
+            // 提交到 Google Apps Script
             fetch('https://script.google.com/macros/s/AKfycbxEGB28SPD3QT5u9s5UK3ysFPs4iOkXg2vAHGPty18vprmqIEqm6ooPhRmoCOTJpaBg/exec', {
                 method: 'POST',
                 mode: 'no-cors',
