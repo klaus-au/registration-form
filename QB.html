@@ -43,6 +43,10 @@
             box-shadow: 0 0 8px rgba(59, 130, 246, 0.3);
             background-color: #E0F2FE;
         }
+        .month-group h3 {
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+        }
         @media (max-width: 600px) {
             body {
                 margin: 16px auto;
@@ -55,6 +59,9 @@
             .container { padding: 0.5rem; }
             .course-card {
                 padding: 12px;
+            }
+            .month-group h3 {
+                font-size: 1rem;
             }
         }
     </style>
@@ -70,10 +77,10 @@
             <ul class="list-none mt-2">
                 <li class="ml-4"><span class="font-bold">初級班</span> (3-7歲，白帶至綠帶)</li>
                 <li class="ml-4">⏰ 12:00pm - 1:00pm</li>
-                <li class="ml-4">[7至10月改為11:00pm - 12:00pm]</li>
+                <li class="ml-4">[7至10月改為11:00am - 12:00pm]</li>
                 <li class="ml-4 mt-2"><span class="font-bold">進階班</span> (8歲或以上，綠帶或以上)</li>
                 <li class="ml-4">⏰ 12:30pm - 2:00pm</li>
-                <li class="ml-4">[7至10月改為11:30pm - 1:00pm]</li>
+                <li class="ml-4">[7至10月改為11:30am - 1:00pm]</li>
             </ul>
             <p class="mt-4">💰 <span class="font-bold">費用</span>：每節課堂 <span class="font-bold">$110</span></p>
             <p><span class="font-bold">收費方式</span></p>
@@ -103,7 +110,7 @@
                 </ul>
             </ol>
             <p class="mt-4">📞 如有任何查詢，歡迎聯繫 歐Sir！</p>
-            <p>📱 WhatsApp: <a href="https://wa.me/85261504221?text=" target="_blank" class="text-blue-600 hover:underline">61504221</a></p>
+            <p>📱 WhatsApp: <a href="https://wa.me/85261504221?text=你好！想查詢鰂魚涌跆拳道班！" target="_blank" class="text-blue-600 hover:underline">61504221</a></p>
         </div>
         <div id="loadingSpinner" class="w-10 h-10 mx-auto my-4 border-4 border-t-transparent border-blue-600 rounded-full animate-spin hidden"></div>
         <div class="space-y-6 mt-6">
@@ -124,13 +131,13 @@
                         <h3 class="text-lg font-semibold">初級班</h3>
                         <p class="text-gray-600">3-7歲 白帶至綠帶</p>
                         <p class="text-gray-600">12:00pm - 1:00pm</p>
-                        <p class="text-gray-600">[7至10月改為11:00pm - 12:00pm]</p>
+                        <p class="text-gray-600">[7至10月改為11:00am - 12:00pm]</p>
                     </div>
                     <div class="course-card" data-value="advanced" onclick="selectClass(this)">
                         <h3 class="text-lg font-semibold">進階班</h3>
                         <p class="text-gray-600">8歲或以上 綠帶或以上</p>
                         <p class="text-gray-600">12:30pm - 2:00pm</p>
-                        <p class="text-gray-600">[7至10月改為11:30pm - 1:00pm]</p>
+                        <p class="text-gray-600">[7至10月改為11:30am - 1:00pm]</p>
                     </div>
                 </div>
                 <p id="class-error" class="error-message hidden">請選擇班別！</p>
@@ -142,15 +149,7 @@
                     <span class="text-sm text-gray-600">至少選擇一個日期</span>
                     <button type="button" id="selectAll" class="btn py-1 px-3 rounded-md text-sm text-white bg-blue-600 hover:bg-blue-700">全選</button>
                 </div>
-                <table class="w-full mt-2 border-collapse">
-                    <thead>
-                        <tr class="bg-gray-200">
-                            <th class="p-2 text-left">日期</th>
-                            <th class="p-2 text-center">選擇</th>
-                        </tr>
-                    </thead>
-                    <tbody id="dateContainer" class="text-gray-700"></tbody>
-                </table>
+                <div id="dateContainer" class="text-gray-700"></div>
                 <p id="date-selection-error" class="error-message hidden">請選擇至少一個日期！</p>
             </div>
             <div>
@@ -246,7 +245,69 @@
             return div.innerHTML;
         }
 
-        // 從 Google Sheet 獲取日期
+        // 後備日期（2025年1-3月星期日，格式為 MM月DD日）
+        const fallbackDates = [
+            { date: '5/1', display: '1月5日', month: 1 },
+            { date: '12/1', display: '1月12日', month: 1 },
+            { date: '19/1', display: '1月19日', month: 1 },
+            { date: '26/1', display: '1月26日', month: 1 },
+            { date: '2/2', display: '2月2日', month: 2 },
+            { date: '9/2', display: '2月9日', month: 2 },
+            { date: '16/2', display: '2月16日', month: 2 },
+            { date: '23/2', display: '2月23日', month: 2 },
+            { date: '2/3', display: '3月2日', month: 3 },
+            { date: '9/3', display: '3月9日', month: 3 },
+            { date: '16/3', display: '3月16日', month: 3 },
+            { date: '23/3', display: '3月23日', month: 3 },
+            { date: '30/3', display: '3月30日', month: 3 }
+        ];
+
+        // 將 MM月DD日 轉為 dd/mm
+        function toBackendFormat(dateStr) {
+            const match = dateStr.match(/^(\d{1,2})月(\d{1,2})日$/);
+            if (match) {
+                const month = parseInt(match[1], 10);
+                const day = parseInt(match[2], 10);
+                return `${day}/${month}`;
+            }
+            return dateStr;
+        }
+
+        // 渲染日期到 dateContainer
+        function renderDates(dates) {
+            const dateContainer = document.getElementById('dateContainer');
+            dateContainer.innerHTML = '';
+            const datesByMonth = {};
+            dates.forEach(({ date, display, month }, index) => {
+                if (!datesByMonth[month]) {
+                    datesByMonth[month] = [];
+                }
+                datesByMonth[month].push({ date, display, index });
+            });
+
+            Object.keys(datesByMonth)
+                .sort((a, b) => a - b)
+                .forEach(month => {
+                    const monthDiv = document.createElement('div');
+                    monthDiv.className = 'month-group';
+                    monthDiv.innerHTML = `<h3 class="text-lg font-semibold text-gray-700 mt-4">${month}月</h3>`;
+                    const ul = document.createElement('ul');
+                    ul.className = 'list-none';
+                    datesByMonth[month].forEach(({ date, display, index }) => {
+                        const li = document.createElement('li');
+                        li.className = 'flex items-center p-2 course-row';
+                        li.innerHTML = `
+                            <span class="flex-1">${escapeHtml(display)}</span>
+                            <input type="checkbox" id="date-${index}" name="dates" value="${escapeHtml(date)}" class="form-checkbox text-blue-600">
+                        `;
+                        ul.appendChild(li);
+                    });
+                    monthDiv.appendChild(ul);
+                    dateContainer.appendChild(monthDiv);
+                });
+        }
+
+        // 從 Google Sheet 獲取日期並按月份分組
         async function fetchSheetData() {
             const spinner = document.getElementById('loadingSpinner');
             spinner.classList.remove('hidden');
@@ -261,28 +322,34 @@
                     throw new Error('無效的 Google Sheets JSONP 回應，請檢查工作表是否公開。');
                 }
                 const data = JSON.parse(jsonString[1]);
-                const dateContainer = document.getElementById('dateContainer');
                 if (data.table && data.table.rows && data.table.rows.length > 0) {
+                    const dates = [];
                     data.table.rows.forEach((row, index) => {
-                        const date = row.c[0]?.v;
-                        if (date) {
-                            const tr = document.createElement('tr');
-                            tr.className = 'course-row';
-                            tr.innerHTML = `
-                                <td class="p-2">${escapeHtml(date)}</td>
-                                <td class="p-2 text-center">
-                                    <input type="checkbox" id="date-${index}" name="dates" value="${escapeHtml(date)}" class="form-checkbox text-blue-600">
-                                </td>
-                            `;
-                            dateContainer.appendChild(tr);
+                        const display = row.c[0]?.v;
+                        if (display) {
+                            const match = display.match(/^(\d{1,2})月(\d{1,2})日$/);
+                            if (match) {
+                                const month = parseInt(match[1], 10);
+                                const day = parseInt(match[2], 10);
+                                const date = `${day}/${month}`;
+                                dates.push({ date, display, month, index });
+                            }
                         }
                     });
+                    if (dates.length > 0) {
+                        renderDates(dates);
+                    } else {
+                        alert('工作表中無有效日期資料，日期格式應為 MM月DD日（例如 1月5日）。將使用後備日期。');
+                        renderDates(fallbackDates);
+                    }
                 } else {
-                    alert('工作表中無有效日期資料，請確保 G 欄從第 2 行開始有資料，並檢查工作表名稱是否為 "' + sheetName + '"。');
+                    alert('工作表中無有效日期資料，請確保 G 欄從第 2 行開始有 MM月DD日 格式的日期，並檢查工作表名稱是否為 "' + sheetName + '"。將使用後備日期。');
+                    renderDates(fallbackDates);
                 }
             } catch (error) {
-                alert(`載入日期資料失敗：${error.message}。請確保 Google Sheet 已設為公開，且工作表名稱正確。`);
+                alert(`載入日期資料失敗：${error.message}\n請確保 Google Sheet 已設為「任何人可查看」（分享設定），G 欄有 MM月DD日 格式的日期（例如 1月5日），並檢查 spreadsheetId 和 sheetName 是否正確。將使用後備日期。\n如需協助，請聯繫 WhatsApp: 61504221`);
                 console.error('Fetch error:', error);
+                renderDates(fallbackDates);
             } finally {
                 spinner.classList.add('hidden');
             }
@@ -374,7 +441,10 @@
             const phoneInput = document.getElementById('phone');
             const phone = phoneInput.value.trim();
             const classSelected = document.getElementById('class').value;
-            const selectedDates = Array.from(document.querySelectorAll('input[name="dates"]:checked')).map(cb => cb.value);
+            const selectedDates = Array.from(document.querySelectorAll('input[name="dates"]:checked')).map(cb => ({
+                value: cb.value,
+                display: cb.parentElement.querySelector('span').textContent
+            }));
             const leave = document.querySelector('input[name="leave"]:checked')?.value;
             const leaveDate = document.getElementById('leaveDate').value.trim();
             const deduction = document.getElementById('deduction').value;
@@ -442,7 +512,7 @@
             document.getElementById('confirm-name').textContent = name;
             document.getElementById('confirm-phone').textContent = phone;
             document.getElementById('confirm-class').textContent = classSelected === 'junior' ? '初級 3-7歲 白帶至綠帶' : '進階 8歲或以上 綠帶或以上';
-            document.getElementById('confirm-dates').innerHTML = selectedDates.map(date => `<li>${date}</li>`).join('');
+            document.getElementById('confirm-dates').innerHTML = selectedDates.map(date => `<li>${date.display}</li>`).join('');
             document.getElementById('confirm-leave').textContent = leave === 'yes' ? '有' : '沒有';
             document.getElementById('confirm-leave-date').textContent = leaveDate || '無';
             document.getElementById('confirm-deduction').textContent = deduction;
@@ -452,7 +522,7 @@
                 name,
                 phone,
                 class: classSelected,
-                dates: selectedDates,
+                dates: selectedDates.map(date => date.value),
                 leave,
                 leaveDate,
                 deduction
