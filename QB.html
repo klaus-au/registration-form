@@ -291,6 +291,10 @@
             if (checkbox && !checkbox.disabled) {
                 checkbox.checked = !checkbox.checked;
             }
+            // 清除日期錯誤狀態
+            if (document.querySelectorAll('input[name="dates"]:checked').length > 0) {
+                document.getElementById('date-selection-error').classList.add('hidden');
+            }
         }
 
         // 渲染日期到 dateContainer
@@ -364,11 +368,11 @@
                         renderDates(fallbackDates);
                     }
                 } else {
-                    alert('工作表中無有效日期資料，請確保 G 欄從第 2 行開始有 MM月DD日 格式的日期，並檢查工作表名稱是否為 "' + sheetName + '"。將使用後備日期。');
+                    alert('工作表中無有效日期資料，請確認問題並將使用後備日期。');
                     renderDates(fallbackDates);
                 }
             } catch (error) {
-                alert(`載入日期資料失敗：${error.message}\n請確保 Google Sheet 已設為「任何人可查看」（分享設定），G 欄有 MM月DD日 格式的日期（例如 1月5日），並檢查 spreadsheetId 和 sheetName 是否正確。將使用後備日期。\n如需協助，請聯繫 WhatsApp: 61504221`);
+                alert(`載入日期資料失敗：${error.message}\n請確保 Google Sheet 已設為公開，G 列有 MM月DD日 格式的日期（例如 1月5日），並檢查 spreadsheetId 和 sheetName 是否正確。將使用後備日期。\n如需協助，請聯繫 WhatsApp：615042152`);
                 console.error('Fetch error:', error);
                 renderDates(fallbackDates);
             } finally {
@@ -376,7 +380,7 @@
             }
         }
 
-        // 班別選擇邏輯
+        // 班別選擇
         function selectClass(card) {
             document.querySelectorAll('.course-card').forEach(c => c.classList.remove('selected'));
             card.classList.add('selected');
@@ -391,9 +395,35 @@
             const allChecked = Array.from(dateCheckboxes).every(cb => cb.checked);
             dateCheckboxes.forEach(cb => cb.checked = !allChecked);
             selectAllButton.textContent = allChecked ? '全選' : '取消全選';
+            document.getElementById('date-selection-error').classList.add('hidden');
         });
 
-        // 請假單選按鈕邏輯
+        // 即時驗證欄位
+        function validateField(element) {
+            const id = element.id;
+            const value = element.value.trim();
+            const errorElement = document.getElementById(`${id}-error`);
+
+            if (id === 'name') {
+                if (value) {
+                    element.classList.remove('error');
+                    errorElement.classList.add('hidden');
+                }
+            } else if (id === 'phone') {
+                const phoneRegex = /^\d{8}$/;
+                if (phoneRegex.test(value)) {
+                    element.classList.remove('error');
+                    errorElement.classList.add('hidden');
+                }
+            } else if (id === 'leaveDate') {
+                if (!element.disabled && value) {
+                    element.classList.remove('error');
+                    errorElement.classList.add('hidden');
+                }
+            }
+        }
+
+        // 請假邏輯
         const leaveRadios = document.querySelectorAll('input[name="leave"]');
         const leaveDateInput = document.getElementById('leaveDate');
         const leaveDateSection = document.getElementById('leave-date-section');
@@ -409,13 +439,21 @@
                 if (!isYes) {
                     leaveDateInput.value = '';
                     deductionInput.value = '0';
+                    leaveDateInput.classList.remove('error');
+                    document.getElementById('leave-date-error').classList.add('hidden');
+                    deductionInput.classList.remove('error');
+                    document.getElementById('deduction-error').classList.add('hidden');
                 }
                 document.getElementById('leave-error').classList.add('hidden');
-                document.getElementById('deduction-error').classList.add('hidden');
             });
         });
 
-        // 表單驗證與確認頁邏輯
+        // 綁定即時輸入事件
+        document.getElementById('name').addEventListener('input', function(e) { validateField(this); });
+        document.getElementById('phone').addEventListener('input', function(e) { validateField(this); });
+        document.getElementById('leaveDate').addEventListener('input', function(e) { validateField(this); });
+
+        // 表單驗證與確認頁
         document.getElementById('submitButton').addEventListener('click', () => {
             const nameInput = document.getElementById('name');
             const name = nameInput.value.trim();
@@ -546,7 +584,7 @@
             // 準備 Google Form 數據
             const formData = new FormData();
             formData.append('entry.1485466301', name);
-            formData.append('entry.1919163075', phone);
+            formData.append('entry.1910503075', phone);
             formData.append('entry.781986668', classSelected === 'junior' ? '初級 3-7歲 白帶至綠帶' : '進階 8歲或以上 綠帶或以上');
             formData.append('entry.1067771173', dates.map(date => toGoogleFormDateFormat(date.value)).join(','));
             formData.append('entry.1731377011', leave === 'yes' ? '有' : '沒有');
@@ -593,6 +631,8 @@
             leaveDateSection.classList.add('hidden');
             deductionInput.value = '0';
             deductionSection.classList.add('hidden');
+            leaveDateInput.classList.remove('error');
+            document.getElementById('leave-date-error').classList.add('hidden');
             deductionInput.classList.remove('error');
             document.getElementById('deduction-error').classList.add('hidden');
             
